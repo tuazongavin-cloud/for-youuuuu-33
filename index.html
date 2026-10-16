@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, My Favorite Person! 💖</title>
+  <style>
+    :root {
+      --primary: #ff4d6d;
+      --secondary: #ff758f;
+      --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #feada6 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: #2c3e50;
+      overflow-x: hidden;
+      padding-bottom: 50px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header {
+      margin-top: 40px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: #c9184a;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #590d22;
+      font-style: italic;
+    }
+
+    /* Pulsing Heart Button */
+    .heart-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      padding: 15px 35px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(255, 77, 109, 0.4);
+      transition: all 0.3s ease;
+      margin: 25px 0;
+      animation: pulse 1.8s infinite;
+    }
+
+    .heart-btn:hover {
+      transform: scale(1.08);
+      background: #c9184a;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Card Box */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 35px;
+      margin: 25px 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.6);
+      text-align: left;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+
+    .hidden-message {
+      display: none;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    .signature {
+      text-align: right;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #c9184a;
+      font-size: 1.2rem;
+    }
+
+    /* Simple Memory List */
+    .reasons {
+      margin-top: 20px;
+    }
+
+    .reason-item {
+      background: rgba(255, 255, 255, 0.6);
+      margin: 10px 0;
+      padding: 12px 20px;
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <header>
+      <h1>Happy Birthday! 🎂✨</h1>
+      <p class="subtitle">October 25th — A special day for someone truly extraordinary.</p>
+    </header>
+
+    <button class="heart-btn" onclick="revealSurprise()">Tap For Your Birthday Surprise 💖</button>
+
+    <div id="surprise" class="card hidden-message">
+      <h2>Dear [Her Name],</h2>
+      <p style="margin-top: 15px;">
+        I wanted to build something unique for your birthday because standard messages just aren't enough to show how much you mean to me. 
+      </p>
+      <p style="margin-top: 15px;">
+        Getting to know you and being by your side has been one of the absolute best parts of my journey. You bring so much light, elegance, and sweetness everywhere you go, and I hope today brings you as much happiness as you give to everyone around you.
+      </p>
+
+      <div class="reasons">
+        <h3 style="color: #c9184a; margin-top: 20px; margin-bottom: 10px;">A few things I adore about you:</h3>
+        <div class="reason-item">✨ The genuine warmth in your smile when you're truly happy.</div>
+        <div class="reason-item">🌸 How effortlessly kind and thoughtful you are to others.</div>
+        <div class="reason-item">💫 How every conversation with you makes my day so much brighter.</div>
+      </div>
+
+      <p style="margin-top: 20px;">
+        May this year bring you all the love, success, and joy you deserve. I'm so lucky to be here cheering you on.
+      </p>
+
+      <div class="signature">
+        Always yours,<br>
+        [Your Name] ❤️
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    function revealSurprise() {
+      const surpriseCard = document.getElementById('surprise');
+      surpriseCard.style.display = 'block';
+
+      // Scroll smoothly to message
+      surpriseCard.scrollIntoView({ behavior: 'smooth' });
+
+      // Trigger Confetti Explosion
+      var count = 200;
+      var defaults = {
+        origin: { y: 0.7 }
+      };
+
+      function fire(particleRatio, opts) {
+        confetti(Object.assign({}, defaults, opts, {
+          particleCount: Math.floor(count * particleRatio)
+        }));
+      }
+
+      fire(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
+      fire(0.2, {
+        spread: 60,
+      });
+      fire(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+      });
+      fire(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+      });
+      fire(0.1, {
+        spread: 120,
+        startVelocity: 45,
+      });
+    }
+  </script>
+</body>
+</html>
