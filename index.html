@@ -5,9 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Happy Birthday, My Favorite Person! 💖</title>
   
-  <!-- Three.js and OrbitControls CDN for Smooth 3D Blue Galaxy -->
+  <!-- Three.js + Postprocessing Bloom Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
   <style>
     :root {
@@ -258,14 +264,14 @@
       background: rgba(255, 255, 255, 0.95);
     }
 
-    /* --- Smooth 3D Blue Galaxy Fullscreen Overlay Styles --- */
+    /* --- Hyper-Smooth 3D Blue Galaxy Fullscreen Overlay Styles --- */
     #galaxy-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #020208;
+      background-color: #010105;
       z-index: 9999;
       display: none;
       opacity: 0;
@@ -300,50 +306,51 @@
     .galaxy-header {
       text-align: center;
       pointer-events: auto;
-      background: rgba(2, 2, 8, 0.5);
-      padding: 10px 25px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 195, 255, 0.25);
-      box-shadow: 0 0 25px rgba(0, 150, 255, 0.2);
+      background: rgba(2, 4, 15, 0.6);
+      padding: 12px 30px;
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 225, 255, 0.25);
+      box-shadow: 0 0 30px rgba(0, 150, 255, 0.25);
     }
     .galaxy-header h2 {
       font-size: 1.8rem;
-      font-weight: 400;
-      letter-spacing: 3px;
+      font-weight: 300;
+      letter-spacing: 4px;
       color: #e0f7ff;
-      text-shadow: 0 0 12px rgba(0, 204, 255, 0.8);
+      text-shadow: 0 0 15px rgba(0, 225, 255, 0.9);
     }
     .galaxy-header p.instructions {
       font-size: 0.8rem;
-      color: #7ec8e3;
+      color: #8be0ff;
       margin-top: 4px;
+      letter-spacing: 1px;
     }
     .galaxy-controls-bar {
       pointer-events: auto;
       display: flex;
       gap: 15px;
-      background: rgba(10, 15, 30, 0.7);
-      padding: 10px 20px;
+      background: rgba(8, 12, 28, 0.75);
+      padding: 10px 24px;
       border-radius: 30px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
     button.galaxy-btn {
-      background: linear-gradient(135deg, #0077ff, #00ccff);
+      background: linear-gradient(135deg, #0066ff, #00d4ff);
       border: none;
       color: white;
-      padding: 8px 18px;
+      padding: 10px 22px;
       border-radius: 20px;
       cursor: pointer;
       font-size: 0.85rem;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 0 10px rgba(0, 150, 255, 0.4);
+      box-shadow: 0 0 12px rgba(0, 170, 255, 0.4);
     }
     button.galaxy-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(0, 204, 255, 0.8);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 0 20px rgba(0, 220, 255, 0.8);
     }
     /* Modal Card for Love Letters in 3D Galaxy */
     .modal-backdrop {
@@ -352,8 +359,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(5px);
+      background: rgba(2, 4, 12, 0.7);
+      backdrop-filter: blur(8px);
       z-index: 10;
       display: flex;
       justify-content: center;
@@ -367,43 +374,45 @@
       pointer-events: auto;
     }
     .love-card-3d {
-      background: linear-gradient(145deg, #ffffff, #f0f4f8);
-      color: #1a1a2e;
-      width: 300px;
-      padding: 30px 25px;
-      border-radius: 16px;
+      background: linear-gradient(145deg, #ffffff, #edf7ff);
+      color: #0d1b2a;
+      width: 320px;
+      padding: 32px 28px;
+      border-radius: 20px;
       text-align: center;
-      box-shadow: 0 15px 35px rgba(0, 150, 255, 0.3);
+      box-shadow: 0 20px 45px rgba(0, 180, 255, 0.35);
       transform: scale(0.8) translateY(20px);
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(0, 180, 255, 0.3);
     }
     .modal-backdrop.active .love-card-3d {
       transform: scale(1) translateY(0);
     }
     .love-card-3d h3 {
-      font-size: 1.5rem;
-      color: #0077ff;
-      margin-bottom: 12px;
-      letter-spacing: 2px;
+      font-size: 1.6rem;
+      color: #0066ff;
+      margin-bottom: 14px;
+      letter-spacing: 3px;
     }
     .love-card-3d p {
       font-size: 0.95rem;
       line-height: 1.6;
-      color: #333344;
-      margin-bottom: 20px;
+      color: #2b3a4a;
+      margin-bottom: 22px;
     }
     .close-modal-btn {
-      background: #0077ff;
+      background: linear-gradient(135deg, #0066ff, #00c3ff);
       color: white;
       border: none;
-      padding: 8px 25px;
+      padding: 10px 28px;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 600;
-      transition: background 0.2s;
+      box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+      transition: all 0.2s;
     }
     .close-modal-btn:hover {
-      background: #0055bb;
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -468,7 +477,7 @@
         </div>
       </div>
 
-      <!-- Button that launches the Smooth 3D Blue Galaxy -->
+      <!-- Button that launches the Hyper-Smooth 3D Blue Galaxy -->
       <div style="text-align: center; margin: 35px 0;">
         <button class="heart-btn" onclick="launch3DGalaxy()">Click for More Surprises 🎁✨</button>
       </div>
@@ -476,14 +485,14 @@
     </div>
   </div>
 
-  <!-- 🌌 Smooth 3D Blue Galaxy Overlay Screen -->
+  <!-- 🌌 Hyper-Smooth 3D Blue Galaxy Overlay Screen -->
   <div id="galaxy-overlay">
     <div id="canvas-container"></div>
 
     <div class="galaxy-ui-overlay">
       <div class="galaxy-header">
         <h2>Blue Galaxy of Love</h2>
-        <p class="instructions">Click and drag to rotate view • Scroll to zoom • Click glowing blue roses to open letters</p>
+        <p class="instructions">Orbit with drag • Scroll to zoom • Click glowing roses to view letters</p>
       </div>
 
       <div class="galaxy-controls-bar">
@@ -496,7 +505,7 @@
     <!-- Letter Popup Modal -->
     <div class="modal-backdrop" id="modal-backdrop">
       <div class="love-card-3d">
-        <h3 id="card-title">AMOR</h3>
+        <h3 id="card-title">MY LOVE</h3>
         <p id="card-text">You are my universe, my guiding star, and the most beautiful part of my everyday life.</p>
         <button class="close-modal-btn" id="close-modal">Close</button>
       </div>
@@ -584,9 +593,9 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Smooth 3D Galaxy Initialization ---
+    // --- Hyper-Smooth 3D Galaxy Initialization ---
     let galaxyInitialized = false;
-    let scene, camera, renderer, controls, galaxyParticles, interactiveGroup;
+    let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
     let isSpinning = true;
 
     function launch3DGalaxy() {
@@ -603,73 +612,130 @@
       document.getElementById('galaxy-overlay').classList.remove('active');
     });
 
-    function createGlowParticleTexture() {
+    function createGlowTexture() {
       const canvas = document.createElement('canvas');
-      canvas.width = 64;
-      canvas.height = 64;
+      canvas.width = 128;
+      canvas.height = 128;
       const ctx = canvas.getContext('2d');
 
-      const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-      gradient.addColorStop(0.2, 'rgba(0, 212, 255, 0.8)');
-      gradient.addColorStop(0.5, 'rgba(0, 100, 255, 0.3)');
+      const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+      gradient.addColorStop(0.15, 'rgba(200, 245, 255, 0.85)');
+      gradient.addColorStop(0.4, 'rgba(0, 160, 255, 0.35)');
+      gradient.addColorStop(0.7, 'rgba(0, 60, 200, 0.08)');
       gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 64, 64);
+      ctx.beginPath();
+      ctx.arc(64, 64, 64, 0, Math.PI * 2);
+      ctx.fill();
 
       return new THREE.CanvasTexture(canvas);
+    }
+
+    function create3DRose() {
+      const roseGroup = new THREE.Group();
+      const petalMat = new THREE.MeshStandardMaterial({
+        color: 0x00c8ff,
+        emissive: 0x0044ff,
+        emissiveIntensity: 0.8,
+        roughness: 0.2,
+        side: THREE.DoubleSide
+      });
+
+      const coreGeo = new THREE.SphereGeometry(1.2, 16, 16);
+      const coreMesh = new THREE.Mesh(coreGeo, petalMat);
+      roseGroup.add(coreMesh);
+
+      for (let layer = 0; layer < 3; layer++) {
+        const count = 4 + layer * 2;
+        const radius = 1.2 + layer * 0.8;
+        for (let p = 0; p < count; p++) {
+          const angle = (p / count) * Math.PI * 2 + (layer * 0.5);
+          const petalGeo = new THREE.CircleGeometry(1.2 + layer * 0.3, 12);
+          const petal = new THREE.Mesh(petalGeo, petalMat);
+          petal.position.set(Math.cos(angle) * radius, (Math.random() - 0.5) * 0.4, Math.sin(angle) * radius);
+          petal.rotation.x = Math.PI / 3;
+          petal.rotation.y = -angle;
+          roseGroup.add(petal);
+        }
+      }
+
+      const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = Math.PI / 2;
+      roseGroup.add(ring);
+
+      return roseGroup;
     }
 
     function init3DGalaxy() {
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x020208, 0.002);
+      scene.fog = new THREE.FogExp2(0x010105, 0.0015);
 
       camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-      camera.position.set(0, 40, 140);
+      camera.position.set(0, 45, 140);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ReinhardToneMapping;
+      renderer.toneMappingExposure = 1.2;
       container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
 
-      const ambientLight = new THREE.AmbientLight(0x112244, 2);
+      // UnrealBloom Post-Processing Pass
+      const renderScene = new THREE.RenderPass(scene, camera);
+      const bloomPass = new THREE.UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        1.6, 0.4, 0.15
+      );
+
+      composer = new THREE.EffectComposer(renderer);
+      composer.addPass(renderScene);
+      composer.addPass(bloomPass);
+
+      const ambientLight = new THREE.AmbientLight(0x0a1838, 2.5);
       scene.add(ambientLight);
 
-      const coreLight = new THREE.PointLight(0x00ccff, 4, 300);
+      const coreLight = new THREE.PointLight(0x00d4ff, 5, 350);
       coreLight.position.set(0, 0, 0);
       scene.add(coreLight);
 
-      // Smooth Particle Galaxy
-      const particleTexture = createGlowParticleTexture();
-      const particleCount = 25000;
+      // Particle Spiral Galaxy
+      const glowTexture = createGlowTexture();
+      const particleCount = 45000;
       const geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(particleCount * 3);
       const colors = new Float32Array(particleCount * 3);
 
-      const colorInside = new THREE.Color(0xe0ffff);
-      const colorOutside = new THREE.Color(0x0055ff);
+      const colorCore = new THREE.Color(0xffffff);
+      const colorInner = new THREE.Color(0x80f0ff);
+      const colorOuter = new THREE.Color(0x0044ff);
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
-        const radius = Math.random() * 220;
-        const spinAngle = radius * 0.035;
-        const branchAngle = ((i % 3) * Math.PI * 2) / 3;
+        const radius = Math.pow(Math.random(), 1.2) * 230;
+        const spinAngle = radius * 0.038;
+        const branchAngle = ((i % 4) * Math.PI * 2) / 4;
 
-        const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 15;
-        const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 15;
-        const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 15;
+        const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
+        const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
+        const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
 
         positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
         positions[i3 + 1] = randomY;
         positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
-        const mixedColor = colorInside.clone().lerp(colorOutside, radius / 220);
+        const mixedColor = radius < 30 ? 
+          colorCore.clone().lerp(colorInner, radius / 30) : 
+          colorInner.clone().lerp(colorOuter, (radius - 30) / 200);
+
         colors[i3] = mixedColor.r;
         colors[i3 + 1] = mixedColor.g;
         colors[i3 + 2] = mixedColor.b;
@@ -679,18 +745,42 @@
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
       const particleMaterial = new THREE.PointsMaterial({
-        size: 3.5,
-        map: particleTexture,
+        size: 2.2,
+        map: glowTexture,
         transparent: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
-        vertexColors: true
+        vertexColors: true,
+        opacity: 0.85
       });
 
       galaxyParticles = new THREE.Points(geometry, particleMaterial);
       scene.add(galaxyParticles);
 
-      // Central Smooth Glowing Heart Mesh
+      // Volumetric Nebula Cloud Layer
+      cloudGroup = new THREE.Group();
+      for (let i = 0; i < 20; i++) {
+        const cloudGeo = new THREE.PlaneGeometry(80, 80);
+        const cloudMat = new THREE.MeshBasicMaterial({
+          map: glowTexture,
+          transparent: true,
+          opacity: 0.08,
+          blending: THREE.AdditiveBlending,
+          color: 0x0088ff,
+          depthWrite: false,
+          side: THREE.DoubleSide
+        });
+        const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 140;
+        cloud.position.set(Math.cos(angle) * dist, (Math.random() - 0.5) * 20, Math.sin(angle) * dist);
+        cloud.rotation.x = Math.PI / 2;
+        cloud.rotation.z = Math.random() * Math.PI;
+        cloudGroup.add(cloud);
+      }
+      scene.add(cloudGroup);
+
+      // Central Heart Core
       const heartShape = new THREE.Shape();
       heartShape.fromPoints([
         new THREE.Vector2(0, 3),
@@ -704,22 +794,22 @@
         new THREE.Vector2(0, 3)
       ]);
 
-      const extrudeSettings = { depth: 1, bevelEnabled: true, bevelSegments: 5, steps: 2, bevelSize: 0.8, bevelThickness: 0.8 };
+      const extrudeSettings = { depth: 1.2, bevelEnabled: true, bevelSegments: 6, steps: 2, bevelSize: 0.8, bevelThickness: 0.8 };
       const heartGeo = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
       heartGeo.center();
 
       const heartMat = new THREE.MeshStandardMaterial({
         color: 0x00e1ff,
-        emissive: 0x0077ff,
-        emissiveIntensity: 0.9,
+        emissive: 0x0088ff,
+        emissiveIntensity: 1.2,
         roughness: 0.1,
-        metalness: 0.2
+        metalness: 0.1
       });
-      const centralHeart = new THREE.Mesh(heartGeo, heartMat);
-      centralHeart.scale.set(3, 3, 3);
+      centralHeart = new THREE.Mesh(heartGeo, heartMat);
+      centralHeart.scale.set(3.2, 3.2, 3.2);
       scene.add(centralHeart);
 
-      // Floating Interactive Rose Orbs
+      // Floating Blue Roses & Messages
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
@@ -737,30 +827,24 @@
 
       messages.forEach((msg, index) => {
         const angle = (index / messages.length) * Math.PI * 2;
-        const distance = 55 + Math.random() * 35;
+        const distance = 60 + Math.random() * 30;
         const x = Math.cos(angle) * distance;
         const z = Math.sin(angle) * distance;
         const y = (Math.random() - 0.5) * 25;
 
-        const nodeGeo = new THREE.SphereGeometry(3.5, 32, 32);
-        const nodeMat = new THREE.MeshStandardMaterial({
-          color: 0x00d4ff,
-          emissive: 0x0066ff,
-          emissiveIntensity: 0.8,
-          roughness: 0.1
-        });
-        const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
-        nodeMesh.position.set(x, y, z);
-        nodeMesh.userData = { title: msg.title, text: msg.text };
+        const roseNode = create3DRose();
+        roseNode.position.set(x, y, z);
+        roseNode.userData = { title: msg.title, text: msg.text };
 
-        const ringGeo = new THREE.RingGeometry(4.5, 5.5, 32);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 2;
-        nodeMesh.add(ring);
+        interactiveGroup.add(roseNode);
+        
+        const clickProxyGeo = new THREE.SphereGeometry(4.5, 8, 8);
+        const clickProxyMat = new THREE.MeshBasicMaterial({ visible: false });
+        const clickProxy = new THREE.Mesh(clickProxyGeo, clickProxyMat);
+        clickProxy.userData = { parentNode: roseNode };
+        roseNode.add(clickProxy);
 
-        interactiveGroup.add(nodeMesh);
-        clickableObjects.push(nodeMesh);
+        clickableObjects.push(clickProxy);
       });
 
       window.addEventListener('click', (event) => {
@@ -773,9 +857,9 @@
         const intersects = raycaster.intersectObjects(clickableObjects);
 
         if (intersects.length > 0) {
-          const selectedObject = intersects[0].object;
-          showModal(selectedObject.userData.title, selectedObject.userData.text);
-          controls.target.copy(selectedObject.position);
+          const nodeData = intersects[0].object.userData.parentNode.userData;
+          showModal(nodeData.title, nodeData.text);
+          controls.target.copy(intersects[0].object.userData.parentNode.position);
         }
       });
 
@@ -795,7 +879,7 @@
       });
 
       document.getElementById('reset-cam').addEventListener('click', () => {
-        camera.position.set(0, 40, 140);
+        camera.position.set(0, 45, 140);
         controls.target.set(0, 0, 0);
       });
 
@@ -810,15 +894,20 @@
         const elapsedTime = clock.getElapsedTime();
 
         if (isSpinning) {
-          galaxyParticles.rotation.y = elapsedTime * 0.05;
-          interactiveGroup.rotation.y = elapsedTime * 0.05;
+          galaxyParticles.rotation.y = elapsedTime * 0.04;
+          interactiveGroup.rotation.y = elapsedTime * 0.04;
+          cloudGroup.rotation.y = elapsedTime * 0.02;
         }
 
         centralHeart.rotation.y = elapsedTime * 0.5;
-        centralHeart.position.y = Math.sin(elapsedTime * 2) * 2;
+        centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
+
+        interactiveGroup.children.forEach(rose => {
+          rose.rotation.y = elapsedTime * 0.8;
+        });
 
         controls.update();
-        renderer.render(scene, camera);
+        composer.render();
       }
 
       animateGalaxy();
@@ -827,6 +916,7 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
       });
     }
   </script>
