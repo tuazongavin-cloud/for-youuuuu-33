@@ -538,13 +538,16 @@
       return new THREE.CanvasTexture(canvas);
     }
 
+    // Glowing 3D Rose Creation
     function create3DRose() {
       const roseGroup = new THREE.Group();
+      
+      // Petals material with high emissive glow to trigger bloom
       const petalMat = new THREE.MeshStandardMaterial({
-        color: 0xff758f,
-        emissive: 0xc9184a,
-        emissiveIntensity: 1.5,
-        roughness: 0.2,
+        color: 0xff4d6d,
+        emissive: 0xff4d6d,
+        emissiveIntensity: 3.5,
+        roughness: 0.1,
         side: THREE.DoubleSide
       });
 
@@ -566,8 +569,14 @@
         }
       }
 
+      // Outer Halo Ring with emissive material for glowing effect
       const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.95 });
+      const ringMat = new THREE.MeshBasicMaterial({ 
+        color: 0xffb3c1, 
+        side: THREE.DoubleSide, 
+        transparent: true, 
+        opacity: 0.95 
+      });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       roseGroup.add(ring);
@@ -576,6 +585,7 @@
       return roseGroup;
     }
 
+    // Non-blooming Photo Frame Creation
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
@@ -653,9 +663,10 @@
       controls.enabled = false;
 
       const renderScene = new THREE.RenderPass(scene, camera);
+      // Adjusted threshold to 0.25 to bloom roses + central heart while excluding photos
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.2, 0.4, 0.6
+        1.3, 0.5, 0.25
       );
 
       composer = new THREE.EffectComposer(renderer);
@@ -799,7 +810,7 @@
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
-      // 14 Floating Animated Roses
+      // 14 Floating Animated Glowing Roses
       const roseCount = 14;
       for (let i = 0; i < roseCount; i++) {
         const angle = (i / roseCount) * Math.PI * 2;
@@ -902,7 +913,7 @@
 
         controls.update();
 
-        // Render the scene with composer bloom
+        // Render with composer bloom
         composer.render();
       }
 
