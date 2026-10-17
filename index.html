@@ -3,8 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galaxia de Amor 💖</title>
+  <title>Happy Birthday, My Favorite Person! 💖</title>
   <style>
+    :root {
+      --primary: #ff4d6d;
+      --secondary: #ff758f;
+      --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #feada6 100%);
+      --card-bg: rgba(255, 255, 255, 0.92);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,9 +20,9 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #05020a;
+      background: var(--bg-gradient);
       min-height: 100vh;
-      color: #ffffff;
+      color: #2c3e50;
       overflow-x: hidden;
       padding-bottom: 50px;
     }
@@ -23,265 +30,242 @@
     .container {
       max-width: 850px;
       margin: 0 auto;
-      padding: 15px;
-      text-align: center;
-      perspective: 1000px;
-    }
-
-    /* 🌌 3D ROTATING GALAXY CONTAINER (Like the video) */
-    .scene-3d {
-      width: 100%;
-      height: 600px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      perspective: 1200px;
-      margin: 10px 0;
-    }
-
-    .Para_Ti {
-      position: relative;
-      width: 480px;
-      height: 560px;
-      background: radial-gradient(circle at center, #1b0c33 0%, #080214 70%, #000000 100%);
-      border-radius: 24px;
-      box-shadow: 0 0 50px rgba(255, 77, 109, 0.5), inset 0 0 30px rgba(255, 117, 143, 0.2);
-      border: 2px solid rgba(255, 117, 143, 0.5);
-      overflow: hidden;
-      text-align: center;
-      transform-style: preserve-3d;
-      animation: float3DScene 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes float3DScene {
-      0% { transform: rotateX(8deg) rotateY(-10deg) translateY(0); }
-      100% { transform: rotateX(-8deg) rotateY(10deg) translateY(-10px); }
-    }
-
-    /* Swirling Nebula */
-    .galaxy-spiral {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 400px;
-      height: 400px;
-      margin-top: -200px;
-      margin-left: -200px;
-      background: radial-gradient(circle, rgba(255,117,143,0.35) 0%, rgba(201,24,74,0.15) 50%, transparent 70%);
-      border-radius: 50%;
-      filter: blur(25px);
-      animation: spin 20s linear infinite;
-      transform: translateZ(-30px);
-    }
-
-    @keyframes spin {
-      0% { transform: translateZ(-30px) rotate(0deg); }
-      100% { transform: translateZ(-30px) rotate(360deg); }
-    }
-
-    .star-particle {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
-      animation: twinkle linear infinite;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.3); }
-    }
-
-    /* Central Heart in 3D Foreground */
-    .galaxy-heart {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%) translateZ(60px);
-      font-size: 3.5rem;
-      color: #ff4d6d;
-      text-shadow: 0 0 25px #ff4d6d, 0 0 50px #ff758f;
-      animation: pulseHeart 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulseHeart {
-      from { transform: translate(-50%, -50%) translateZ(60px) scale(1); }
-      to { transform: translate(-50%, -50%) translateZ(80px) scale(1.15); }
-    }
-
-    .galaxy-title {
-      position: absolute;
-      top: 55%;
-      left: 50%;
-      transform: translate(-50%, 0) translateZ(50px);
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #ff758f;
-      text-shadow: 0 0 10px rgba(255, 117, 143, 0.8);
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-    }
-
-    /* 3D Floating Polaroids */
-    .floating-polaroid {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 6px 6px 12px 6px;
-      border-radius: 4px;
-      width: 105px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-      transform-style: preserve-3d;
-    }
-
-    .photo-1 {
-      top: 15%;
-      left: 8%;
-      transform: translateZ(40px) rotate(-8deg);
-    }
-
-    .photo-2 {
-      top: 12%;
-      right: 8%;
-      transform: translateZ(50px) rotate(6deg);
-    }
-
-    .photo-3 {
-      bottom: 12%;
-      left: 33%;
-      transform: translateZ(45px) rotate(-3deg);
-    }
-
-    .floating-polaroid img {
-      width: 100%;
-      height: 85px;
-      object-fit: cover;
-      border-radius: 2px;
-    }
-
-    .floating-polaroid .caption {
-      font-size: 0.65rem;
-      color: #590d22;
-      margin-top: 4px;
-      font-weight: bold;
-    }
-
-    /* Code Editor Display */
-    .code-editor {
-      background: #1e1e2f;
-      border-radius: 12px;
       padding: 20px;
-      margin: 20px auto;
-      max-width: 480px;
-      text-align: left;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.9rem;
-      color: #9cdcfe;
+      text-align: center;
     }
 
-    .code-editor .selector { color: #4ec9b0; font-weight: bold; }
-    .code-editor .property { color: #9cdcfe; }
-    .code-editor .value { color: #ce9178; }
+    header {
+      margin-top: 40px;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(45deg, #c9184a, #ff4d6d, #ff758f, #c9184a);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 4s ease infinite;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #590d22;
+      font-style: italic;
+    }
 
     .heart-btn {
-      background: linear-gradient(45deg, #ff4d6d, #c9184a);
+      background: var(--primary);
       color: white;
       border: none;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       font-weight: 600;
-      padding: 14px 30px;
+      padding: 16px 36px;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
-      transition: all 0.3s ease;
-      margin: 15px 0;
+      box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      margin: 25px 0 35px 0;
+      animation: pulse 1.8s infinite;
     }
 
-    .heart-btn:hover { transform: scale(1.05); }
+    .heart-btn:hover {
+      transform: scale(1.1) translateY(-3px);
+      background: #c9184a;
+      box-shadow: 0 15px 30px rgba(255, 77, 109, 0.6);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    /* Polaroid Photo Gallery Styling */
+    .gallery-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 25px 0;
+    }
+
+    .polaroid {
+      background: #ffffff;
+      padding: 14px 14px 20px 14px;
+      border-radius: 6px;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+      text-align: center;
+      width: 230px;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .polaroid::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 14px;
+      background: #ff4d6d;
+      border-radius: 50%;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      z-index: 5;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .polaroid .caption {
+      margin-top: 12px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #590d22;
+      font-family: 'Comic Sans MS', 'Segoe Print', cursive, sans-serif;
+    }
+
+    .polaroid:nth-child(1) { transform: rotate(-3deg); }
+    .polaroid:nth-child(2) { transform: rotate(2deg); }
+    .polaroid:nth-child(3) { transform: rotate(-2deg); }
+
+    .polaroid:hover {
+      transform: rotate(0deg) scale(1.08) translateY(-10px);
+      box-shadow: 0 20px 35px rgba(0,0,0,0.25);
+      z-index: 30;
+    }
 
     .card {
-      background: rgba(20, 10, 35, 0.85);
+      background: var(--card-bg);
       backdrop-filter: blur(12px);
-      border-radius: 15px;
-      padding: 25px;
-      margin: 20px 0;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      border: 1px solid rgba(255, 117, 143, 0.3);
+      border-radius: 20px;
+      padding: 35px;
+      margin: 25px 0;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      border: 1px solid rgba(255,255,255,0.8);
       text-align: left;
-      line-height: 1.7;
-      font-size: 1rem;
-      color: #fff0f3;
+      line-height: 1.8;
+      font-size: 1.1rem;
     }
 
     .hidden-message {
       display: none;
-      animation: fadeIn 1s ease forwards;
+      animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes slideUpFade {
+      from { 
+        opacity: 0; 
+        transform: translateY(40px) scale(0.95); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99;
     }
 
     .signature {
       text-align: right;
-      margin-top: 20px;
+      margin-top: 25px;
       font-weight: bold;
-      color: #ff758f;
+      color: #c9184a;
+      font-size: 1.25rem;
+    }
+
+    .reasons {
+      margin-top: 20px;
+    }
+
+    .reason-item {
+      background: rgba(255, 255, 255, 0.7);
+      margin: 12px 0;
+      padding: 14px 22px;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .reason-item:hover {
+      transform: translateX(8px);
+      background: rgba(255, 255, 255, 0.95);
     }
   </style>
 </head>
 <body>
 
+  <canvas id="confetti-canvas"></canvas>
+
   <div class="container">
-
-    <!-- 🌌 3D Scene Viewport -->
-    <div class="scene-3d">
-      <div class="Para_Ti">
-        <div class="galaxy-spiral"></div>
-        <div id="star-container"></div>
-        <div class="galaxy-heart">💖</div>
-        <div class="galaxy-title">Te amo</div>
-
-        <div class="floating-polaroid photo-1">
-          <img src="photo1.jpg" alt="Photo 1">
-          <div class="caption">so cuteee!</div>
-        </div>
-
-        <div class="floating-polaroid photo-2">
-          <img src="photo2.jpg" alt="Photo 2">
-          <div class="caption">my love 💕</div>
-        </div>
-
-        <div class="floating-polaroid photo-3">
-          <img src="photo3.jpg" alt="Photo 3">
-          <div class="caption">forever ✨</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Code Editor Display -->
-    <div class="code-editor">
-      <span class="selector">.Para_Ti</span> {<br>
-      &nbsp;&nbsp;<span class="property">position</span>: <span class="value">absolute</span>;<br>
-      &nbsp;&nbsp;<span class="property">width</span>: <span class="value">90%</span>;<br>
-      &nbsp;&nbsp;<span class="property">font-size</span>: <span class="value">2rem</span>;<br>
-      &nbsp;&nbsp;<span class="property">font-family</span>: <span class="value">"Te Amo"</span>;<br>
-      &nbsp;&nbsp;<span class="property">height</span>: <span class="value">var(--letter-love)</span>;<br>
-      }
-    </div>
+    <header>
+      <h1>Happy Birthday! 🎂✨</h1>
+      <p class="subtitle">October 25th — A special day for my babyyyyyyyy.</p>
+    </header>
 
     <button class="heart-btn" onclick="revealSurprise()">Tap For Your Birthday Surprise 💖</button>
 
+    <!-- Hidden Surprise Section -->
     <div id="surprise" class="hidden-message">
+
+      <!-- Polaroid Photos Gallery -->
+      <div class="gallery-container">
+        <div class="polaroid">
+          <img src="photo1.jpg" alt="Our First Trip">
+          <div class="caption"> ur so cuteeeeee waaaa!</div>
+        </div>
+
+        <div class="polaroid">
+          <img src="photo2.jpg" alt="Sweetest Smiles">
+          <div class="caption"> againnn, soo cuteeeee </div>
+        </div>
+
+        <div class="polaroid">
+          <img src="photo3.jpg" alt="Precious Moments">
+          <div class="caption"> super duper cutee!</div>
+        </div>
+      </div>
+
+      <!-- Main Message Card -->
       <div class="card">
-        <h2 style="color: #ff758f;">Dear Therizzz!,</h2>
-        <p style="margin-top: 12px;">
+        <h2>Dear Therizzz!,</h2>
+        <p style="margin-top: 15px;">
           I wanted to build something unique for your birthday because standard messages just aren't enough to show how much you mean to me. 
         </p>
-        <p style="margin-top: 12px;">
-          Getting to know you and being by your side has been one of the absolute best parts of my journey. You bring so much light, elegance, and sweetness everywhere you go, and I hope today brings you as much happiness as you give to everyone around you!
+        <p style="margin-top: 15px;">
+          Getting to know you and being by your side has been one of the absolute best parts of my journey. You bring so much light, elegance, and sweetness everywhere you go, and I hope today brings you as much happiness as you give to everyone around you. I want your day to be a special day for you and always remember that I will celebrate your birthday every year because I am always here by your side! 
+        </p>
+
+        <div class="reasons">
+          <h3 style="color: #c9184a; margin-top: 20px; margin-bottom: 10px;">A few things I adore about you:</h3>
+          <div class="reason-item">✨ The genuine warmth in your smile when you're truly happy.</div>
+          <div class="reason-item">🌸 How effortlessly kind and thoughtful you are to others.</div>
+          <div class="reason-item">💫 How every conversation with you makes my day so much brighter.</div>
+        </div>
+
+        <p style="margin-top: 20px;">
+          May this year bring you all the love, success, and joy you deserve. I'm so lucky to be here cheering you on.
         </p>
 
         <div class="signature">
@@ -289,32 +273,34 @@
           Giiiiaaaaaaann ❤️
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script>
-    function createBoxStars() {
-      const container = document.getElementById('star-container');
-      for (let i = 0; i < 40; i++) {
-        const star = document.createElement('div');
-        star.classList.add('star-particle');
-        const size = Math.random() * 3 + 1;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-        star.style.animationDelay = (Math.random() * 3) + 's';
-        container.appendChild(star);
-      }
-    }
-    createBoxStars();
-
     function revealSurprise() {
       const surpriseCard = document.getElementById('surprise');
       surpriseCard.style.display = 'block';
+
+      // Scroll smoothly to message
       surpriseCard.scrollIntoView({ behavior: 'smooth' });
+
+      // Trigger Confetti Explosion
+      var count = 200;
+      var defaults = { origin: { y: 0.7 } };
+
+      function fire(particleRatio, opts) {
+        confetti(Object.assign({}, defaults, opts, {
+          particleCount: Math.floor(count * particleRatio)
+        }));
+      }
+
+      fire(0.25, { spread: 26, startVelocity: 55 });
+      fire(0.2, { spread: 60 });
+      fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+      fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+      fire(0.1, { spread: 120, startVelocity: 45 });
     }
   </script>
 </body>
