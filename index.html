@@ -18,136 +18,160 @@
       color: #ffffff;
       overflow-x: hidden;
       padding-bottom: 50px;
+      perspective: 1000px; /* Enables 3D perspective space */
     }
 
-    /* 🌌 The Interactive Galaxy Box */
+    /* 🌌 3D INTERACTIVE GALAXY CONTAINER 🌌 */
+    .galaxy-viewport {
+      perspective: 1200px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
     .Para_Ti {
       position: relative;
       width: 90%;
-      max-width: 500px;
-      height: 560px;
-      margin: 30px auto 20px auto;
+      max-width: 520px;
+      height: 580px;
       background: radial-gradient(circle at center, #1b0c33 0%, #080214 70%, #000000 100%);
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(255, 77, 109, 0.4);
+      border-radius: 24px;
+      box-shadow: 0 0 50px rgba(255, 77, 109, 0.5), 0 20px 40px rgba(0,0,0,0.8);
       border: 2px solid rgba(255, 117, 143, 0.4);
       overflow: hidden;
       text-align: center;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+      cursor: grab;
     }
 
-    /* Swirling Nebula Center */
+    .Para_Ti:active {
+      cursor: grabbing;
+    }
+
+    /* 3D Layered Nebula Background */
     .galaxy-spiral {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 400px;
-      height: 400px;
-      margin-top: -200px;
-      margin-left: -200px;
-      background: radial-gradient(circle, rgba(255,117,143,0.3) 0%, rgba(201,24,74,0.15) 50%, transparent 70%);
+      width: 450px;
+      height: 450px;
+      margin-top: -225px;
+      margin-left: -225px;
+      background: radial-gradient(circle, rgba(255,117,143,0.35) 0%, rgba(201,24,74,0.15) 50%, transparent 70%);
       border-radius: 50%;
-      filter: blur(25px);
+      filter: blur(30px);
       animation: spin 20s linear infinite;
       pointer-events: none;
+      transform: translateZ(-50px); /* Pushed back in 3D depth */
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.1); }
-      100% { transform: rotate(360deg) scale(1); }
+      0% { transform: translateZ(-50px) rotate(0deg); }
+      100% { transform: translateZ(-50px) rotate(360deg); }
     }
 
-    /* Star Particles inside the Galaxy Box */
+    /* Star Particles with 3D Depth */
     .star-particle {
       position: absolute;
       background: white;
       border-radius: 50%;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
       animation: twinkle linear infinite;
       pointer-events: none;
     }
 
     @keyframes twinkle {
       0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.2); }
+      50% { opacity: 1; transform: scale(1.4); }
     }
 
-    /* Central Heart in Galaxy */
+    /* Central HeartFloating in 3D Foreground */
     .galaxy-heart {
       position: absolute;
       top: 42%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3.5rem;
+      transform: translate3d(-50%, -50%, 60px); /* Floating forward in 3D */
+      font-size: 3.8rem;
       color: #ff4d6d;
-      text-shadow: 0 0 20px #ff4d6d, 0 0 40px #ff758f;
+      text-shadow: 0 0 25px #ff4d6d, 0 0 50px #ff758f;
       animation: pulseHeart 2s ease-in-out infinite alternate;
       z-index: 5;
+      pointer-events: none;
     }
 
     @keyframes pulseHeart {
-      from { transform: translate(-50%, -50%) scale(1); }
-      to { transform: translate(-50%, -50%) scale(1.12); }
+      from { transform: translate3d(-50%, -50%, 60px) scale(1); }
+      to { transform: translate3d(-50%, -50%, 80px) scale(1.15); }
     }
 
     .galaxy-title {
       position: absolute;
-      top: 58%;
+      top: 56%;
       left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.4rem;
+      transform: translate3d(-50%, 0, 50px);
+      font-size: 1.5rem;
       font-weight: 700;
       color: #ff758f;
-      text-shadow: 0 0 10px rgba(255, 117, 143, 0.8);
+      text-shadow: 0 0 12px rgba(255, 117, 143, 0.9);
       z-index: 5;
       font-family: 'Comic Sans MS', cursive, sans-serif;
+      pointer-events: none;
     }
 
-    /* ✨ Free-Floating Polaroids (Scattered around the galaxy like the video) */
+    /* 📸 3D Floating Polaroid Photos */
     .floating-polaroid {
       position: absolute;
       background: rgba(255, 255, 255, 0.95);
       padding: 6px 6px 12px 6px;
-      border-radius: 4px;
-      width: 105px;
+      border-radius: 6px;
+      width: 110px;
       text-align: center;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
       z-index: 10;
-      animation: floatOrbit 5s ease-in-out infinite alternate;
+      transform-style: preserve-3d;
+      animation: float3D 4s ease-in-out infinite alternate;
+      transition: transform 0.3s ease;
     }
 
-    /* Position each photo differently inside the box */
+    .floating-polaroid:hover {
+      transform: scale(1.15) translateZ(100px) !important;
+      z-index: 30;
+    }
+
+    /* Positioned floating in 3D coordinates */
     .photo-1 {
-      top: 15%;
+      top: 12%;
       left: 8%;
-      transform: rotate(-8deg);
+      transform: translateZ(40px) rotate(-8deg);
       animation-delay: 0s;
     }
 
     .photo-2 {
       top: 10%;
       right: 8%;
-      transform: rotate(6deg);
-      animation-delay: 1.5s;
+      transform: translateZ(50px) rotate(6deg);
+      animation-delay: 1.2s;
     }
 
     .photo-3 {
-      bottom: 12%;
+      bottom: 10%;
       left: 33%;
-      transform: rotate(-3deg);
-      animation-delay: 3s;
+      transform: translateZ(45px) rotate(-3deg);
+      animation-delay: 2.4s;
     }
 
-    @keyframes floatOrbit {
-      0% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
-      100% { transform: translateY(-8px) rotate(calc(var(--rot, 0deg) + 3deg)); }
+    @keyframes float3D {
+      0% { transform: translateY(0px) translateZ(40px) rotate(-4deg); }
+      100% { transform: translateY(-10px) translateZ(70px) rotate(4deg); }
     }
 
     .floating-polaroid img {
       width: 100%;
-      height: 85px;
+      height: 90px;
       object-fit: cover;
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .floating-polaroid .caption {
@@ -169,8 +193,8 @@
       background: #1e1e2f;
       border-radius: 12px;
       padding: 20px;
-      margin: 20px auto;
-      max-width: 500px;
+      margin: 25px auto;
+      max-width: 520px;
       text-align: left;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -183,14 +207,14 @@
     .code-editor .property { color: #9cdcfe; }
     .code-editor .value { color: #ce9178; }
 
-    /* Main Message Card & Button */
+    /* Button and Message Card */
     .heart-btn {
       background: linear-gradient(45deg, #ff4d6d, #c9184a);
       color: white;
       border: none;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 600;
-      padding: 14px 30px;
+      padding: 14px 32px;
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
@@ -236,27 +260,29 @@
 
   <div class="container">
 
-    <!-- 🌌 GALAXIA DE AMOR COMPONENT -->
-    <div class="Para_Ti" id="galaxy-box">
-      <div class="galaxy-spiral"></div>
-      <div id="star-container"></div>
-      <div class="galaxy-heart">💖</div>
-      <div class="galaxy-title">Te amo</div>
+    <div class="galaxy-viewport">
+      <!-- 🌌 3D INTERACTIVE GALAXY BOX -->
+      <div class="Para_Ti" id="galaxyBox">
+        <div class="galaxy-spiral"></div>
+        <div id="star-container"></div>
+        <div class="galaxy-heart">💖</div>
+        <div class="galaxy-title">Te amo</div>
 
-      <!-- Free-floating polaroids scattered across the space background -->
-      <div class="floating-polaroid photo-1" style="--rot: -8deg;">
-        <img src="photo1.jpg" alt="Photo 1">
-        <div class="caption">so cuteee!</div>
-      </div>
+        <!-- Floating photos scattered in 3D space -->
+        <div class="floating-polaroid photo-1">
+          <img src="photo1.jpg" alt="Photo 1">
+          <div class="caption">so cuteee!</div>
+        </div>
 
-      <div class="floating-polaroid photo-2" style="--rot: 6deg;">
-        <img src="photo2.jpg" alt="Photo 2">
-        <div class="caption">my love 💕</div>
-      </div>
+        <div class="floating-polaroid photo-2">
+          <img src="photo2.jpg" alt="Photo 2">
+          <div class="caption">my love 💕</div>
+        </div>
 
-      <div class="floating-polaroid photo-3" style="--rot: -3deg;">
-        <img src="photo3.jpg" alt="Photo 3">
-        <div class="caption">forever ✨</div>
+        <div class="floating-polaroid photo-3">
+          <img src="photo3.jpg" alt="Photo 3">
+          <div class="caption">forever ✨</div>
+        </div>
       </div>
     </div>
 
@@ -294,10 +320,10 @@
   </div>
 
   <script>
-    // Generate twinkling stars across the galaxy box
+    // Generate twinkling stars
     function createBoxStars() {
       const container = document.getElementById('star-container');
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 45; i++) {
         const star = document.createElement('div');
         star.classList.add('star-particle');
         const size = Math.random() * 3 + 1;
@@ -311,6 +337,34 @@
       }
     }
     createBoxStars();
+
+    // 🕹️ 3D INTERACTIVE TILT & ROTATE EFFECT
+    const galaxyBox = document.getElementById('galaxyBox');
+
+    function handleMove(e) {
+      const rect = galaxyBox.getBoundingClientRect();
+      const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+      const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Calculate tilt angles based on mouse / finger position
+      const rotateX = ((y - centerY) / centerY) * -25; // max 25 deg tilt
+      const rotateY = ((x - centerX) / centerX) * 25;
+
+      galaxyBox.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    }
+
+    function handleReset() {
+      galaxyBox.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    }
+
+    // Event listeners for Mouse & Touch
+    galaxyBox.addEventListener('mousemove', handleMove);
+    galaxyBox.addEventListener('mouseleave', handleReset);
+    galaxyBox.addEventListener('touchmove', handleMove);
+    galaxyBox.addEventListener('touchend', handleReset);
 
     function revealSurprise() {
       const surpriseCard = document.getElementById('surprise');
