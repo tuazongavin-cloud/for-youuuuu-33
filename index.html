@@ -488,7 +488,7 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization with Floating 3D Photos ---
+    // --- Pink Universe 3D Initialization with Crisp & Sharp 3D Photos ---
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
     let isSpinning = true;
@@ -572,55 +572,59 @@
       return roseGroup;
     }
 
-    // Function to create a 3D Floating Polaroid Photo Frame
+    // Function to create a Crisp, High-Visibility 3D Polaroid Frame
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
-      // Outer White Polaroid Border
-      const borderGeo = new THREE.PlaneGeometry(12, 15);
-      const borderMat = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        roughness: 0.3,
+      // Slightly darker white/soft grey border so Bloom post-processing doesn't wash it out
+      const borderGeo = new THREE.PlaneGeometry(16, 20);
+      const borderMat = new THREE.MeshBasicMaterial({
+        color: 0xdedede,
         side: THREE.DoubleSide
       });
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
       frameGroup.add(borderMesh);
 
-      // Photo Texture Mesh
+      // Photo Texture Mesh with Crisp Filtering
       const textureLoader = new THREE.TextureLoader();
       textureLoader.load(
         imageUrl,
         (texture) => {
-          const photoGeo = new THREE.PlaneGeometry(10.5, 11);
+          texture.generateMipmaps = true;
+          texture.minFilter = THREE.LinearMipmapLinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+          if (renderer) texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+          const photoGeo = new THREE.PlaneGeometry(14, 15);
           const photoMat = new THREE.MeshBasicMaterial({
             map: texture,
             side: THREE.DoubleSide
           });
           const photoMesh = new THREE.Mesh(photoGeo, photoMat);
-          photoMesh.position.set(0, 1, 0.05); // Slightly in front of border
+          photoMesh.position.set(0, 1.2, 0.08); // Placed slightly above border
           frameGroup.add(photoMesh);
         },
         undefined,
         () => {
-          // Fallback if image path is not found yet
-          const fallbackGeo = new THREE.PlaneGeometry(10.5, 11);
+          // Fallback if image path is not found
+          const fallbackGeo = new THREE.PlaneGeometry(14, 15);
           const fallbackMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide });
           const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
-          fallbackMesh.position.set(0, 1, 0.05);
+          fallbackMesh.position.set(0, 1.2, 0.08);
           frameGroup.add(fallbackMesh);
         }
       );
 
-      // Soft Backing Shadow Plane
-      const shadowGeo = new THREE.PlaneGeometry(12.2, 15.2);
+      // Soft Dark Pink Shadow Backing
+      const shadowGeo = new THREE.PlaneGeometry(16.4, 20.4);
       const shadowMat = new THREE.MeshBasicMaterial({
-        color: 0xff4d6d,
+        color: 0x590d22,
         transparent: true,
-        opacity: 0.4,
+        opacity: 0.6,
         side: THREE.DoubleSide
       });
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
-      shadowMesh.position.set(0, 0, -0.05);
+      shadowMesh.position.set(0, 0, -0.08);
       frameGroup.add(shadowMesh);
 
       return frameGroup;
@@ -646,20 +650,23 @@
       controls.dampingFactor = 0.05;
       controls.enabled = false;
 
+      // Softened Bloom Pass so bloom threshold does not overexpose white photos
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.0, 0.4, 0.3
+        0.75, // Lower bloom strength to keep photos crisp
+        0.3, 
+        0.65 // Higher threshold so only glowing particles bloom, NOT photos
       );
 
       composer = new THREE.EffectComposer(renderer);
       composer.addPass(renderScene);
       composer.addPass(bloomPass);
 
-      const ambientLight = new THREE.AmbientLight(0x4a1528, 2.5);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
       scene.add(ambientLight);
 
-      const coreLight = new THREE.PointLight(0xffb3c1, 5, 350);
+      const coreLight = new THREE.PointLight(0xffb3c1, 4, 350);
       coreLight.position.set(0, 0, 0);
       scene.add(coreLight);
 
@@ -782,11 +789,11 @@
         interactiveGroup.add(roseNode);
       }
 
-      // Add 5 Floating 3D Polaroid Photo Frames around the Heart
+      // Add 5 Floating Crisp 3D Polaroid Photo Frames around the Heart
       const photoFiles = ['3dphoto1.jpg', '3dphoto2.jpg', '3dphoto3.jpg', '3dphoto4.jpg', '3dphoto5.jpg'];
       
       photoFiles.forEach((file, index) => {
-        const angle = (index / photoFiles.length) * Math.PI * 2 + 0.6; // Staggered angle
+        const angle = (index / photoFiles.length) * Math.PI * 2 + 0.6;
         const distance = 85 + Math.random() * 20;
         const posX = Math.cos(angle) * distance;
         const posZ = Math.sin(angle) * distance;
@@ -838,7 +845,7 @@
         centralHeart.rotation.y = elapsedTime * 0.5;
         centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
 
-        // Make floating photo frames look smoothly toward camera so photos stay clear
+        // Smoothly orient photos towards camera so they remain clear
         photoPlanes.forEach(photo => {
           photo.lookAt(camera.position);
         });
