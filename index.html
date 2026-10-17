@@ -392,7 +392,7 @@
         </div>
       </div>
 
-      <!-- Button that launches the Pink Universe with Cinematic Intro -->
+      <!-- Button that launches the Pink Universe -->
       <div style="text-align: center; margin: 35px 0;">
         <button class="heart-btn" onclick="launch3DGalaxy()">Click for More Surprises 🎁✨</button>
       </div>
@@ -488,12 +488,13 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization with Cinematic Intro ---
+    // --- Pink Universe 3D Initialization with Floating 3D Photos ---
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
     let isSpinning = true;
     let isIntroPlaying = true;
     let introProgress = 0;
+    const photoPlanes = [];
 
     function launch3DGalaxy() {
       const overlay = document.getElementById('galaxy-overlay');
@@ -503,7 +504,6 @@
         initPinkUniverse();
         galaxyInitialized = true;
       } else {
-        // Reset cinematic intro every time you re-enter
         isIntroPlaying = true;
         introProgress = 0;
         controls.enabled = false;
@@ -572,14 +572,66 @@
       return roseGroup;
     }
 
+    // Function to create a 3D Floating Polaroid Photo Frame
+    function create3DPhotoFrame(imageUrl) {
+      const frameGroup = new THREE.Group();
+
+      // Outer White Polaroid Border
+      const borderGeo = new THREE.PlaneGeometry(12, 15);
+      const borderMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.3,
+        side: THREE.DoubleSide
+      });
+      const borderMesh = new THREE.Mesh(borderGeo, borderMat);
+      frameGroup.add(borderMesh);
+
+      // Photo Texture Mesh
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.load(
+        imageUrl,
+        (texture) => {
+          const photoGeo = new THREE.PlaneGeometry(10.5, 11);
+          const photoMat = new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.DoubleSide
+          });
+          const photoMesh = new THREE.Mesh(photoGeo, photoMat);
+          photoMesh.position.set(0, 1, 0.05); // Slightly in front of border
+          frameGroup.add(photoMesh);
+        },
+        undefined,
+        () => {
+          // Fallback if image path is not found yet
+          const fallbackGeo = new THREE.PlaneGeometry(10.5, 11);
+          const fallbackMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide });
+          const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
+          fallbackMesh.position.set(0, 1, 0.05);
+          frameGroup.add(fallbackMesh);
+        }
+      );
+
+      // Soft Backing Shadow Plane
+      const shadowGeo = new THREE.PlaneGeometry(12.2, 15.2);
+      const shadowMat = new THREE.MeshBasicMaterial({
+        color: 0xff4d6d,
+        transparent: true,
+        opacity: 0.4,
+        side: THREE.DoubleSide
+      });
+      const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+      shadowMesh.position.set(0, 0, -0.05);
+      frameGroup.add(shadowMesh);
+
+      return frameGroup;
+    }
+
     function initPinkUniverse() {
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
       scene.fog = new THREE.FogExp2(0x080105, 0.0015);
 
       camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-      
-      // Start camera far away for the cinematic intro fly-in
       camera.position.set(0, 150, 450);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -592,7 +644,7 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-      controls.enabled = false; // Disable user control during intro animation
+      controls.enabled = false;
 
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
@@ -717,24 +769,34 @@
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
-      const messages = [
-        { title: "MY LOVE", text: "You are the light that guides me through every single day." },
-        { title: "FOREVER", text: "Every moment spent with you feels like a dream come true." },
-        { title: "MY EVERYTHING", text: "Your smile brightens up my whole universe." },
-        { title: "YOU & ME", text: "Pasig or anywhere across the map, my heart stays with you." },
-        { title: "SO BEAUTIFUL", text: "You are my precious treasure and my greatest blessing." }
-      ];
-
-      messages.forEach((msg, index) => {
-        const angle = (index / messages.length) * Math.PI * 2;
-        const distance = 60 + Math.random() * 30;
+      // Add 5 Floating 3D Roses
+      for (let i = 0; i < 5; i++) {
+        const angle = (i / 5) * Math.PI * 2;
+        const distance = 55 + Math.random() * 15;
         const posX = Math.cos(angle) * distance;
         const posZ = Math.sin(angle) * distance;
-        const posY = (Math.random() - 0.5) * 25;
+        const posY = (Math.random() - 0.5) * 15;
 
         const roseNode = create3DRose();
         roseNode.position.set(posX, posY, posZ);
         interactiveGroup.add(roseNode);
+      }
+
+      // Add 5 Floating 3D Polaroid Photo Frames around the Heart
+      const photoFiles = ['3dphoto1.jpg', '3dphoto2.jpg', '3dphoto3.jpg', '3dphoto4.jpg', '3dphoto5.jpg'];
+      
+      photoFiles.forEach((file, index) => {
+        const angle = (index / photoFiles.length) * Math.PI * 2 + 0.6; // Staggered angle
+        const distance = 85 + Math.random() * 20;
+        const posX = Math.cos(angle) * distance;
+        const posZ = Math.sin(angle) * distance;
+        const posY = (Math.random() - 0.5) * 20;
+
+        const photoFrame = create3DPhotoFrame(file);
+        photoFrame.position.set(posX, posY, posZ);
+        
+        interactiveGroup.add(photoFrame);
+        photoPlanes.push(photoFrame);
       });
 
       document.getElementById('reset-cam').addEventListener('click', () => {
@@ -752,16 +814,14 @@
         requestAnimationFrame(animateUniverse);
         const elapsedTime = clock.getElapsedTime();
 
-        // Cinematic Fly-In Intro Animation
         if (isIntroPlaying) {
-          introProgress += 0.012; // Controls speed of fly-in
+          introProgress += 0.012;
           if (introProgress >= 1) {
             introProgress = 1;
             isIntroPlaying = false;
-            controls.enabled = true; // Enable free movement after animation
+            controls.enabled = true;
           }
 
-          // Smooth Ease-Out Interpolation from start position to final position (0, 45, 140)
           const easeProgress = 1 - Math.pow(1 - introProgress, 3);
           camera.position.x = 0 * easeProgress;
           camera.position.y = 150 + (45 - 150) * easeProgress;
@@ -778,8 +838,9 @@
         centralHeart.rotation.y = elapsedTime * 0.5;
         centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
 
-        interactiveGroup.children.forEach(rose => {
-          rose.rotation.y = elapsedTime * 0.8;
+        // Make floating photo frames look smoothly toward camera so photos stay clear
+        photoPlanes.forEach(photo => {
+          photo.lookAt(camera.position);
         });
 
         controls.update();
