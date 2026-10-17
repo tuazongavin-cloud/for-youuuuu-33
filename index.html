@@ -474,7 +474,7 @@
 
   <!-- 🌌 Pink Universe 3D Fullscreen Overlay Screen -->
   <div id="galaxy-overlay">
-    <div class="universe-hint">✨ Click any floating 3D picture in the universe to view it!</div>
+    <div class="universe-hint">✨ Tap any floating 3D picture in the universe to view it!</div>
     <div id="canvas-container"></div>
 
     <div class="galaxy-ui-overlay">
@@ -926,14 +926,14 @@
         photoPlanes.push(photoFrame);
       });
 
-      // Click listener to inspect 3D photos in the universe
-      window.addEventListener('click', (event) => {
+      // Unified Click & Touch Interaction Handler for 3D Photos
+      function handleInteraction(clientX, clientY) {
         const overlay = document.getElementById('galaxy-overlay');
         const modal = document.getElementById('universe-photo-modal');
         if (!overlay.classList.contains('active') || modal.classList.contains('active')) return;
 
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        mouse.x = (clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
 
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(interactiveGroup.children, true);
@@ -947,7 +947,17 @@
             openUniversePhotoModal(obj.userData.imageUrl);
           }
         }
+      }
+
+      window.addEventListener('click', (event) => {
+        handleInteraction(event.clientX, event.clientY);
       });
+
+      window.addEventListener('touchend', (event) => {
+        if (event.changedTouches.length > 0) {
+          handleInteraction(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+        }
+      }, { passive: true });
 
       document.getElementById('reset-cam').addEventListener('click', () => {
         camera.position.set(0, 45, 140);
