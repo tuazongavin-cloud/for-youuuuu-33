@@ -27,7 +27,6 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      user-select: none; /* Prevents text highlighting / accidental dragging shifts */
     }
 
     body {
@@ -134,19 +133,16 @@
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
-      transition: background 0.3s ease, transform 0.2s ease;
       margin: 20px 0 35px 0;
       position: relative;
       z-index: 20;
     }
 
     .heart-btn:hover {
-      transform: translateY(-2px);
       background: #c9184a;
-      box-shadow: 0 15px 30px rgba(255, 77, 109, 0.6);
     }
 
-    /* Polaroid Photo Gallery Styling */
+    /* Polaroid Photo Gallery Styling (Fixed - No Layout Shift) */
     .gallery-container {
       display: flex;
       justify-content: center;
@@ -162,7 +158,6 @@
       box-shadow: 0 12px 25px rgba(0,0,0,0.15);
       text-align: center;
       width: 230px;
-      transition: all 0.4s ease;
       position: relative;
       cursor: pointer;
     }
@@ -200,12 +195,6 @@
     .polaroid:nth-child(2) { transform: rotate(2deg); }
     .polaroid:nth-child(3) { transform: rotate(-2deg); }
 
-    .polaroid:hover {
-      transform: rotate(0deg) scale(1.08) translateY(-10px);
-      box-shadow: 0 20px 35px rgba(0,0,0,0.25);
-      z-index: 30;
-    }
-
     .card {
       background: var(--card-bg);
       border-radius: 20px;
@@ -220,18 +209,6 @@
 
     .hidden-message {
       display: none;
-      animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes slideUpFade {
-      from { 
-        opacity: 0; 
-        transform: translateY(40px) scale(0.95); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-      }
     }
 
     #confetti-canvas {
@@ -281,12 +258,6 @@
       padding: 14px 22px;
       border-left: 5px solid var(--primary);
       border-radius: 10px;
-      transition: transform 0.3s ease;
-    }
-
-    .reason-item:hover {
-      transform: translateX(8px);
-      background: #ffffff;
     }
 
     /* --- Pink Universe 3D Fullscreen Overlay Styles --- */
@@ -349,11 +320,9 @@
       cursor: pointer;
       font-size: 0.85rem;
       font-weight: 600;
-      transition: all 0.3s ease;
       box-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
     }
     button.galaxy-btn:hover {
-      transform: translateY(-2px) scale(1.04);
       box-shadow: 0 0 22px rgba(255, 77, 109, 0.8);
     }
 
@@ -386,11 +355,6 @@
       max-width: 90vw;
       width: 380px;
       text-align: center;
-      transform: scale(0.8);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    #lightbox-modal.active .lightbox-card, #universe-photo-modal.active .u-modal-card {
-      transform: scale(1);
     }
     .lightbox-card img, .u-modal-card img {
       width: 100%;
@@ -416,10 +380,6 @@
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(255, 77, 109, 0.5);
-      transition: transform 0.2s ease;
-    }
-    .lightbox-close-btn:hover, .u-modal-close:hover {
-      transform: scale(1.05);
     }
   </style>
 </head>
