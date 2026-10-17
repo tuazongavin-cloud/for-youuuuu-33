@@ -39,11 +39,11 @@
       position: relative;
     }
 
-    /* Floating Background Ambient Hearts */
+    /* Floating Background Ambient Hearts & Sparkles */
     .ambient-heart {
       position: absolute;
       bottom: -20px;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.75);
       font-size: 1.5rem;
       animation: floatUpwards 6s linear infinite;
       pointer-events: none;
@@ -72,37 +72,100 @@
     }
 
     header {
-      margin-top: 50px;
-      margin-bottom: 30px;
+      margin-top: 40px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    /* VIP Birthday Badge */
+    .vip-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 77, 109, 0.3);
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #c9184a;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.15);
+      animation: badgePulse 2s infinite ease-in-out;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .title-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Floating decorative header elements */
+    .deco-ribbon {
+      position: absolute;
+      top: -15px;
+      left: -45px;
+      font-size: 2rem;
+      animation: floatSide 3s ease-in-out infinite alternate;
+    }
+    .deco-balloon {
+      position: absolute;
+      top: -20px;
+      right: -45px;
+      font-size: 2rem;
+      animation: floatSide 3.5s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes floatSide {
+      from { transform: translateY(0) rotate(-5deg); }
+      to { transform: translateY(-8px) rotate(8deg); }
     }
 
     h1 {
       font-size: 3rem;
       color: #c9184a;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       font-weight: 800;
-      text-shadow: 0 4px 12px rgba(201, 24, 74, 0.15);
+      text-shadow: 0 4px 15px rgba(201, 24, 74, 0.2);
     }
 
     .subtitle {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       color: #590d22;
       font-style: italic;
       font-weight: 500;
+    }
+
+    /* Envelope Greeting Preview Box */
+    .envelope-box {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(10px);
+      border: 2px dashed rgba(255, 77, 109, 0.4);
+      border-radius: 20px;
+      padding: 20px;
+      max-width: 420px;
+      margin: 25px auto 10px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      font-size: 1.1rem;
+      color: #72093b;
+      font-weight: 600;
     }
 
     .heart-btn {
       background: var(--primary);
       color: white;
       border: none;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 600;
       padding: 16px 36px;
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      margin: 25px 0 35px 0;
+      margin: 20px 0 35px 0;
       animation: pulse 1.8s infinite;
       position: relative;
       z-index: 20;
@@ -138,6 +201,7 @@
       width: 230px;
       transition: all 0.4s ease;
       position: relative;
+      cursor: pointer;
     }
 
     .polaroid::before {
@@ -332,8 +396,8 @@
       box-shadow: 0 0 22px rgba(255, 77, 109, 0.8);
     }
 
-    /* --- Universe 3D Photo Modal View --- */
-    #universe-photo-modal {
+    /* --- Lightbox Modals --- */
+    #lightbox-modal, #universe-photo-modal {
       position: fixed;
       top: 0;
       left: 0;
@@ -341,7 +405,7 @@
       height: 100vh;
       background: rgba(8, 1, 5, 0.88);
       backdrop-filter: blur(15px);
-      z-index: 10000;
+      z-index: 20000;
       display: none;
       justify-content: center;
       align-items: center;
@@ -349,32 +413,39 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    #universe-photo-modal.active {
+    #lightbox-modal.active, #universe-photo-modal.active {
       display: flex;
       opacity: 1;
     }
-    .u-modal-card {
+    .lightbox-card, .u-modal-card {
       background: white;
       padding: 20px 20px 30px 20px;
       border-radius: 10px;
       box-shadow: 0 25px 50px rgba(255, 77, 109, 0.4);
       max-width: 90vw;
-      width: 360px;
+      width: 380px;
       text-align: center;
       transform: scale(0.8);
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    #universe-photo-modal.active .u-modal-card {
+    #lightbox-modal.active .lightbox-card, #universe-photo-modal.active .u-modal-card {
       transform: scale(1);
     }
-    .u-modal-card img {
+    .lightbox-card img, .u-modal-card img {
       width: 100%;
       height: 340px;
       object-fit: cover;
       border-radius: 4px;
     }
-    .u-modal-close {
-      margin-top: 22px;
+    .lightbox-caption {
+      margin-top: 15px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #590d22;
+      font-family: 'Comic Sans MS', 'Segoe Print', cursive, sans-serif;
+    }
+    .lightbox-close-btn, .u-modal-close {
+      margin-top: 20px;
       background: linear-gradient(135deg, #ff4d6d, #c9184a);
       color: white;
       border: none;
@@ -386,7 +457,7 @@
       box-shadow: 0 5px 15px rgba(255, 77, 109, 0.5);
       transition: transform 0.2s ease;
     }
-    .u-modal-close:hover {
+    .lightbox-close-btn:hover, .u-modal-close:hover {
       transform: scale(1.05);
     }
   </style>
@@ -404,28 +475,37 @@
   <!-- First Page Content -->
   <div class="container">
     <header>
-      <h1>Happy Birthday! 🎂✨</h1>
+      <div class="vip-badge">🎉 VIP Birthday Celebration ✨</div>
+      <div class="title-wrapper">
+        <span class="deco-ribbon">🎀</span>
+        <h1>Happy Birthday! 🎂</h1>
+        <span class="deco-balloon">🎈</span>
+      </div>
       <p class="subtitle">October 25th — A special day for my babyyyyyyyy.</p>
     </header>
+
+    <div class="envelope-box">
+      💌 A little magic waiting inside just for you. Tap below to begin! ✨
+    </div>
 
     <button class="heart-btn" onclick="revealSurprise()">Tap For Your Birthday Surprise 💖</button>
 
     <!-- Hidden Surprise Section -->
     <div id="surprise" class="hidden-message">
 
-      <!-- Polaroid Photos Gallery -->
+      <!-- Polaroid Photos Gallery (Clickable) -->
       <div class="gallery-container">
-        <div class="polaroid">
+        <div class="polaroid" onclick="openLightbox('photo1.jpg', 'ur so cuteeeeee waaaa!')">
           <img src="photo1.jpg" alt="Our First Trip">
           <div class="caption">ur so cuteeeeee waaaa!</div>
         </div>
 
-        <div class="polaroid">
+        <div class="polaroid" onclick="openLightbox('photo2.jpg', 'againnn, soo cuteeeee')">
           <img src="photo2.jpg" alt="Sweetest Smiles">
           <div class="caption">againnn, soo cuteeeee</div>
         </div>
 
-        <div class="polaroid">
+        <div class="polaroid" onclick="openLightbox('photo3.jpg', 'super duper cutee!')">
           <img src="photo3.jpg" alt="Precious Moments">
           <div class="caption">super duper cutee!</div>
         </div>
@@ -449,7 +529,7 @@
         </div>
 
         <p style="margin-top: 20px;">
-          May this year bring you all the love, success, and joy you deserve. I'm so lucky to be here cheering you on. I love you so muchhhh!! mwaaaahh!!
+          May this year bring you all the love, success, and joy you deserve. I'm so lucky to be here cheering you on.
         </p>
 
         <div class="signature">
@@ -480,6 +560,15 @@
     </div>
   </div>
 
+  <!-- Lightbox Modal for Card Polaroids -->
+  <div id="lightbox-modal">
+    <div class="lightbox-card">
+      <img id="lightbox-img" src="" alt="Memory">
+      <div id="lightbox-caption" class="lightbox-caption"></div>
+      <button class="lightbox-close-btn" onclick="closeLightbox()">Back to Card 💖</button>
+    </div>
+  </div>
+
   <!-- 3D Universe Photo Inspection Modal -->
   <div id="universe-photo-modal">
     <div class="u-modal-card">
@@ -493,6 +582,11 @@
     let ambientHeartsInterval = null;
     let bgMusic = document.getElementById('bg-music');
     let isMusicPlaying = false;
+
+    // Start ambient floating hearts right away on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      startAmbientHearts();
+    });
 
     function playAudio() {
       if (!isMusicPlaying) {
@@ -525,7 +619,7 @@
 
     function startAmbientHearts() {
       if (ambientHeartsInterval) return;
-      const symbols = ['💖', '✨', '🌸', '💕', '⭐'];
+      const symbols = ['💖', '✨', '🌸', '💕', '⭐', '🎈', '🎀'];
       
       ambientHeartsInterval = setInterval(() => {
         const heart = document.createElement('div');
@@ -572,13 +666,11 @@
     });
 
     function revealSurprise() {
-      // Start background music as soon as first button is clicked
       playAudio();
 
       const surpriseCard = document.getElementById('surprise');
       surpriseCard.style.display = 'block';
 
-      startAmbientHearts();
       surpriseCard.scrollIntoView({ behavior: 'smooth' });
 
       var count = 200;
@@ -595,6 +687,22 @@
       fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
       fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
       fire(0.1, { spread: 120, startVelocity: 45 });
+    }
+
+    // Lightbox Handlers for Card Polaroids
+    function openLightbox(imgSrc, captionText) {
+      const modal = document.getElementById('lightbox-modal');
+      const modalImg = document.getElementById('lightbox-img');
+      const modalCaption = document.getElementById('lightbox-caption');
+
+      modalImg.src = imgSrc;
+      modalCaption.innerText = captionText;
+      modal.classList.add('active');
+    }
+
+    function closeLightbox() {
+      const modal = document.getElementById('lightbox-modal');
+      modal.classList.remove('active');
     }
 
     // --- Pink Universe 3D Initialization ---
