@@ -312,6 +312,8 @@
       border-radius: 30px;
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 117, 143, 0.2);
+      flex-wrap: wrap;
+      justify-content: center;
     }
     button.galaxy-btn {
       background: linear-gradient(135deg, #ff4d6d, #ff758f);
@@ -391,6 +393,12 @@
 </head>
 <body>
 
+  <!-- Background Music Element -->
+  <audio id="bg-music" loop preload="auto">
+    <!-- Replace birthday_song.mp3 with your converted MP3 file name -->
+    <source src="birthday_song.mp3" type="audio/mpeg">
+  </audio>
+
   <canvas id="confetti-canvas"></canvas>
 
   <!-- First Page Content -->
@@ -466,6 +474,7 @@
       <div class="galaxy-controls-bar">
         <button class="galaxy-btn" id="reset-cam">Reset View</button>
         <button class="galaxy-btn" id="toggle-spin">Toggle Spin</button>
+        <button class="galaxy-btn" id="toggle-music" onclick="toggleAudio()">🎵 Music: On</button>
         <button class="galaxy-btn" id="close-galaxy" style="background: linear-gradient(135deg, #590d22, #2c1a22);">Back to Cards</button>
       </div>
     </div>
@@ -482,6 +491,37 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script>
     let ambientHeartsInterval = null;
+    let bgMusic = document.getElementById('bg-music');
+    let isMusicPlaying = false;
+
+    function playAudio() {
+      if (!isMusicPlaying) {
+        bgMusic.play().then(() => {
+          isMusicPlaying = true;
+          updateMusicButtonText();
+        }).catch(err => {
+          console.log("Audio play blocked by browser:", err);
+        });
+      }
+    }
+
+    function toggleAudio() {
+      if (isMusicPlaying) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+      } else {
+        bgMusic.play();
+        isMusicPlaying = true;
+      }
+      updateMusicButtonText();
+    }
+
+    function updateMusicButtonText() {
+      const musicBtn = document.getElementById('toggle-music');
+      if (musicBtn) {
+        musicBtn.innerText = isMusicPlaying ? "🎵 Music: On" : "🔇 Music: Off";
+      }
+    }
 
     function startAmbientHearts() {
       if (ambientHeartsInterval) return;
@@ -532,6 +572,9 @@
     });
 
     function revealSurprise() {
+      // Start background music as soon as first button is clicked
+      playAudio();
+
       const surpriseCard = document.getElementById('surprise');
       surpriseCard.style.display = 'block';
 
