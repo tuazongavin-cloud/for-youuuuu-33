@@ -1,900 +1,506 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Birthday, My Favorite Person! 💖</title>
-  
-  <!-- Three.js + Postprocessing Bloom Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxia de Flores Azules - Hyper-Smooth 3D</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #010105;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #ffffff;
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px;
+        }
+        header {
+            text-align: center;
+            pointer-events: auto;
+            background: rgba(2, 4, 15, 0.6);
+            padding: 12px 30px;
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 225, 255, 0.25);
+            box-shadow: 0 0 30px rgba(0, 150, 255, 0.25);
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: #e0f7ff;
+            text-shadow: 0 0 15px rgba(0, 225, 255, 0.9);
+        }
+        p.instructions {
+            font-size: 0.8rem;
+            color: #8be0ff;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+        .controls-bar {
+            pointer-events: auto;
+            display: flex;
+            gap: 15px;
+            background: rgba(8, 12, 28, 0.75);
+            padding: 10px 24px;
+            border-radius: 30px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        button.btn {
+            background: linear-gradient(135deg, #0066ff, #00d4ff);
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 12px rgba(0, 170, 255, 0.4);
+        }
+        button.btn:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 0 20px rgba(0, 220, 255, 0.8);
+        }
 
-  <style>
-    :root {
-      --primary: #ff4d6d;
-      --secondary: #ff758f;
-      --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #feada6 100%);
-      --card-bg: rgba(255, 255, 255, 0.92);
-    }
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 4, 12, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .love-card {
+            background: linear-gradient(145deg, #ffffff, #edf7ff);
+            color: #0d1b2a;
+            width: 320px;
+            padding: 32px 28px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 45px rgba(0, 180, 255, 0.35);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 180, 255, 0.3);
+        }
+        .modal-backdrop.active .love-card {
+            transform: scale(1) translateY(0);
+        }
+        .love-card h2 {
+            font-size: 1.6rem;
+            color: #0066ff;
+            margin-bottom: 14px;
+            letter-spacing: 3px;
+        }
+        .love-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2b3a4a;
+            margin-bottom: 22px;
+        }
+        .close-btn {
+            background: linear-gradient(135deg, #0066ff, #00c3ff);
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+        }
+    </style>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-gradient);
-      min-height: 100vh;
-      color: #2c3e50;
-      overflow-x: hidden;
-      padding-bottom: 50px;
-      position: relative;
-    }
-
-    /* Floating Background Ambient Hearts */
-    .ambient-heart {
-      position: absolute;
-      bottom: -20px;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 1.5rem;
-      animation: floatUpwards 6s linear infinite;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    @keyframes floatUpwards {
-      0% {
-        transform: translateY(0) scale(0.8) rotate(0deg);
-        opacity: 0;
-      }
-      20% { opacity: 0.9; }
-      100% {
-        transform: translateY(-105vh) scale(1.3) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-    .container {
-      position: relative;
-      z-index: 10;
-      max-width: 850px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
-
-    header {
-      margin-top: 50px;
-      margin-bottom: 30px;
-    }
-
-    h1 {
-      font-size: 3rem;
-      color: #c9184a;
-      margin-bottom: 12px;
-      font-weight: 800;
-      text-shadow: 0 4px 12px rgba(201, 24, 74, 0.15);
-    }
-
-    .subtitle {
-      font-size: 1.25rem;
-      color: #590d22;
-      font-style: italic;
-      font-weight: 500;
-    }
-
-    .heart-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      font-size: 1.4rem;
-      font-weight: 600;
-      padding: 16px 36px;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      margin: 25px 0 35px 0;
-      animation: pulse 1.8s infinite;
-      position: relative;
-      z-index: 20;
-    }
-
-    .heart-btn:hover {
-      transform: scale(1.1) translateY(-3px);
-      background: #c9184a;
-      box-shadow: 0 15px 30px rgba(255, 77, 109, 0.6);
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.06); }
-      100% { transform: scale(1); }
-    }
-
-    /* Polaroid Photo Gallery Styling */
-    .gallery-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin: 25px 0;
-    }
-
-    .polaroid {
-      background: #ffffff;
-      padding: 14px 14px 20px 14px;
-      border-radius: 6px;
-      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-      text-align: center;
-      width: 230px;
-      transition: all 0.4s ease;
-      position: relative;
-    }
-
-    .polaroid::before {
-      content: '';
-      position: absolute;
-      top: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 14px;
-      height: 14px;
-      background: #ff4d6d;
-      border-radius: 50%;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-      z-index: 5;
-    }
-
-    .polaroid img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-
-    .polaroid .caption {
-      margin-top: 12px;
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #590d22;
-      font-family: 'Comic Sans MS', 'Segoe Print', cursive, sans-serif;
-    }
-
-    .polaroid:nth-child(1) { transform: rotate(-3deg); }
-    .polaroid:nth-child(2) { transform: rotate(2deg); }
-    .polaroid:nth-child(3) { transform: rotate(-2deg); }
-
-    .polaroid:hover {
-      transform: rotate(0deg) scale(1.08) translateY(-10px);
-      box-shadow: 0 20px 35px rgba(0,0,0,0.25);
-      z-index: 30;
-    }
-
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 35px;
-      margin: 25px 0;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-      border: 1px solid rgba(255,255,255,0.8);
-      text-align: left;
-      line-height: 1.8;
-      font-size: 1.1rem;
-    }
-
-    .hidden-message {
-      display: none;
-      animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes slideUpFade {
-      from { 
-        opacity: 0; 
-        transform: translateY(40px) scale(0.95); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-      }
-    }
-
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 99;
-    }
-
-    /* Click Burst Heart Effect */
-    .burst-heart {
-      position: fixed;
-      font-size: 1.4rem;
-      pointer-events: none;
-      animation: burstAnim 0.8s ease-out forwards;
-      z-index: 1000;
-    }
-
-    @keyframes burstAnim {
-      0% {
-        transform: translate(0, 0) scale(0.5);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--dx), var(--dy)) scale(1.4);
-        opacity: 0;
-      }
-    }
-
-    .signature {
-      text-align: right;
-      margin-top: 25px;
-      font-weight: bold;
-      color: #c9184a;
-      font-size: 1.25rem;
-    }
-
-    .reasons {
-      margin-top: 20px;
-    }
-
-    .reason-item {
-      background: rgba(255, 255, 255, 0.7);
-      margin: 12px 0;
-      padding: 14px 22px;
-      border-left: 5px solid var(--primary);
-      border-radius: 10px;
-      transition: transform 0.3s ease;
-    }
-
-    .reason-item:hover {
-      transform: translateX(8px);
-      background: rgba(255, 255, 255, 0.95);
-    }
-
-    /* --- Pink Universe 3D Fullscreen Overlay Styles --- */
-    #galaxy-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #080105;
-      z-index: 9999;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-    #galaxy-overlay.active {
-      display: block;
-      opacity: 1;
-    }
-    #canvas-container {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-    .galaxy-ui-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 30px;
-    }
-    .galaxy-controls-bar {
-      pointer-events: auto;
-      display: flex;
-      gap: 15px;
-      background: rgba(20, 8, 18, 0.75);
-      padding: 12px 28px;
-      border-radius: 30px;
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 117, 143, 0.2);
-    }
-    button.galaxy-btn {
-      background: linear-gradient(135deg, #ff4d6d, #ff758f);
-      border: none;
-      color: white;
-      padding: 10px 22px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
-    }
-    button.galaxy-btn:hover {
-      transform: translateY(-2px) scale(1.04);
-      box-shadow: 0 0 22px rgba(255, 77, 109, 0.8);
-    }
-    /* Modal Card for Love Letters in 3D Galaxy */
-    .modal-backdrop {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(10, 2, 8, 0.75);
-      backdrop-filter: blur(8px);
-      z-index: 10;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .modal-backdrop.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .love-card-3d {
-      background: linear-gradient(145deg, #ffffff, #fff0f3);
-      color: #590d22;
-      width: 320px;
-      padding: 32px 28px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 20px 45px rgba(255, 77, 109, 0.35);
-      transform: scale(0.8) translateY(20px);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border: 1px solid rgba(255, 117, 143, 0.3);
-    }
-    .modal-backdrop.active .love-card-3d {
-      transform: scale(1) translateY(0);
-    }
-    .love-card-3d h3 {
-      font-size: 1.6rem;
-      color: #c9184a;
-      margin-bottom: 14px;
-      letter-spacing: 3px;
-    }
-    .love-card-3d p {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: #4a202c;
-      margin-bottom: 22px;
-    }
-    .close-modal-btn {
-      background: linear-gradient(135deg, #ff4d6d, #c9184a);
-      color: white;
-      border: none;
-      padding: 10px 28px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
-      transition: all 0.2s;
-    }
-    .close-modal-btn:hover {
-      transform: scale(1.05);
-    }
-  </style>
+    <!-- Three.js + Postprocessing Bloom Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 </head>
 <body>
 
-  <canvas id="confetti-canvas"></canvas>
-
-  <!-- First Page Content -->
-  <div class="container">
-    <header>
-      <h1>Happy Birthday! 🎂✨</h1>
-      <p class="subtitle">October 25th — A special day for my babyyyyyyyy.</p>
-    </header>
-
-    <button class="heart-btn" onclick="revealSurprise()">Tap For Your Birthday Surprise 💖</button>
-
-    <!-- Hidden Surprise Section -->
-    <div id="surprise" class="hidden-message">
-
-      <!-- Polaroid Photos Gallery -->
-      <div class="gallery-container">
-        <div class="polaroid">
-          <img src="photo1.jpg" alt="Our First Trip">
-          <div class="caption">ur so cuteeeeee waaaa!</div>
-        </div>
-
-        <div class="polaroid">
-          <img src="photo2.jpg" alt="Sweetest Smiles">
-          <div class="caption">againnn, soo cuteeeee</div>
-        </div>
-
-        <div class="polaroid">
-          <img src="photo3.jpg" alt="Precious Moments">
-          <div class="caption">super duper cutee!</div>
-        </div>
-      </div>
-
-      <!-- Main Message Card -->
-      <div class="card">
-        <h2>Dear Therizzz!,</h2>
-        <p style="margin-top: 15px;">
-          I wanted to build something unique for your birthday because standard messages just aren't enough to show how much you mean to me. 
-        </p>
-        <p style="margin-top: 15px;">
-          Getting to know you and being by your side has been one of the absolute best parts of my journey. You bring so much light, elegance, and sweetness everywhere you go, and I hope today brings you as much happiness as you give to everyone around you. I want your day to be a special day for you and always remember that I will celebrate your birthday every year because I am always here by your side! 
-        </p>
-
-        <div class="reasons">
-          <h3 style="color: #c9184a; margin-top: 20px; margin-bottom: 10px;">A few things I adore about you:</h3>
-          <div class="reason-item">✨ The genuine warmth in your smile when you're truly happy.</div>
-          <div class="reason-item">🌸 How effortlessly kind and thoughtful you are to others.</div>
-          <div class="reason-item">💫 How every conversation with you makes my day so much brighter.</div>
-        </div>
-
-        <p style="margin-top: 20px;">
-          May this year bring you all the love, success, and joy you deserve. I'm so lucky to be here cheering you on.
-        </p>
-
-        <div class="signature">
-          Always yours,<br>
-          Giiiiaaaaaaann ❤️
-        </div>
-      </div>
-
-      <!-- Button that launches the Pink Universe -->
-      <div style="text-align: center; margin: 35px 0;">
-        <button class="heart-btn" onclick="launch3DGalaxy()">Click for More Surprises 🎁✨</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- 🌌 Pink Universe 3D Fullscreen Overlay Screen -->
-  <div id="galaxy-overlay">
     <div id="canvas-container"></div>
 
-    <div class="galaxy-ui-overlay">
-      <div class="galaxy-controls-bar">
-        <button class="galaxy-btn" id="reset-cam">Reset View</button>
-        <button class="galaxy-btn" id="toggle-spin">Toggle Spin</button>
-        <button class="galaxy-btn" id="close-galaxy" style="background: linear-gradient(135deg, #590d22, #2c1a22);">Back to Cards</button>
-      </div>
+    <div class="ui-overlay">
+        <header>
+            <h1>Blue Galaxy of Love</h1>
+            <p class="instructions">Orbit with drag • Scroll to zoom • Click glowing roses to view letters</p>
+        </header>
+
+        <div class="controls-bar">
+            <button class="btn" id="reset-cam">Reset View</button>
+            <button class="btn" id="toggle-spin">Toggle Spin</button>
+        </div>
     </div>
 
-    <!-- Letter Popup Modal -->
     <div class="modal-backdrop" id="modal-backdrop">
-      <div class="love-card-3d">
-        <h3 id="card-title">MY LOVE</h3>
-        <p id="card-text">You are my universe, my guiding star, and the most beautiful part of my everyday life.</p>
-        <button class="close-modal-btn" id="close-modal">Close</button>
-      </div>
+        <div class="love-card">
+            <h2 id="card-title">MY LOVE</h2>
+            <p id="card-text">You are my universe, my guiding star, and the most beautiful part of my everyday life.</p>
+            <button class="close-btn" id="close-modal">Close</button>
+        </div>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-  <script>
-    let ambientHeartsInterval = null;
+    <script>
+        // High Quality Soft Glow Radial Alpha Map Texture
+        function createGlowTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
 
-    // 💖 Ambient Floating Background Hearts (Starts ONLY after clicking surprise)
-    function startAmbientHearts() {
-      if (ambientHeartsInterval) return;
-      const symbols = ['💖', '✨', '🌸', '💕', '⭐'];
-      
-      ambientHeartsInterval = setInterval(() => {
-        const heart = document.createElement('div');
-        heart.classList.add('ambient-heart');
-        heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
-        document.body.appendChild(heart);
+            const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+            gradient.addColorStop(0.15, 'rgba(200, 245, 255, 0.85)');
+            gradient.addColorStop(0.4, 'rgba(0, 160, 255, 0.35)');
+            gradient.addColorStop(0.7, 'rgba(0, 60, 200, 0.08)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
-        setTimeout(() => {
-          heart.remove();
-        }, 7000);
-      }, 400);
-    }
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(64, 64, 64, 0, Math.PI * 2);
+            ctx.fill();
 
-    // 💥 Click-to-Burst Heart Effect anywhere on screen
-    document.addEventListener('click', function(e) {
-      const burstCount = 8;
-      const symbols = ['💖', '💕', '✨', '💗'];
-
-      for (let i = 0; i < burstCount; i++) {
-        const burst = document.createElement('div');
-        burst.classList.add('burst-heart');
-        burst.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-        
-        const x = e.clientX;
-        const y = e.clientY;
-        burst.style.left = x + 'px';
-        burst.style.top = y + 'px';
-
-        const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 90 + 30;
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance;
-
-        burst.style.setProperty('--dx', dx + 'px');
-        burst.style.setProperty('--dy', dy + 'px');
-
-        document.body.appendChild(burst);
-
-        setTimeout(() => {
-          burst.remove();
-        }, 800);
-      }
-    });
-
-    function revealSurprise() {
-      const surpriseCard = document.getElementById('surprise');
-      surpriseCard.style.display = 'block';
-
-      // Start the floating ambient hearts on the second page
-      startAmbientHearts();
-
-      // Scroll smoothly to message
-      surpriseCard.scrollIntoView({ behavior: 'smooth' });
-
-      // Trigger Confetti Explosion
-      var count = 200;
-      var defaults = { origin: { y: 0.7 } };
-
-      function fire(particleRatio, opts) {
-        confetti(Object.assign({}, defaults, opts, {
-          particleCount: Math.floor(count * particleRatio)
-        }));
-      }
-
-      fire(0.25, { spread: 26, startVelocity: 55 });
-      fire(0.2, { spread: 60 });
-      fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-      fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-      fire(0.1, { spread: 120, startVelocity: 45 });
-    }
-
-    // --- Pink Universe 3D Initialization ---
-    let galaxyInitialized = false;
-    let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
-    let isSpinning = true;
-
-    function launch3DGalaxy() {
-      const overlay = document.getElementById('galaxy-overlay');
-      overlay.classList.add('active');
-
-      if (!galaxyInitialized) {
-        initPinkUniverse();
-        galaxyInitialized = true;
-      }
-    }
-
-    document.getElementById('close-galaxy').addEventListener('click', () => {
-      document.getElementById('galaxy-overlay').classList.remove('active');
-    });
-
-    function createGlowTexture() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 128;
-      canvas.height = 128;
-      const ctx = canvas.getContext('2d');
-
-      const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-      gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-      gradient.addColorStop(0.15, 'rgba(255, 200, 220, 0.85)');
-      gradient.addColorStop(0.4, 'rgba(255, 77, 109, 0.35)');
-      gradient.addColorStop(0.7, 'rgba(180, 20, 80, 0.08)');
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(64, 64, 64, 0, Math.PI * 2);
-      ctx.fill();
-
-      return new THREE.CanvasTexture(canvas);
-    }
-
-    function create3DRose() {
-      const roseGroup = new THREE.Group();
-      const petalMat = new THREE.MeshStandardMaterial({
-        color: 0xff758f,
-        emissive: 0xc9184a,
-        emissiveIntensity: 0.8,
-        roughness: 0.2,
-        side: THREE.DoubleSide
-      });
-
-      const coreGeo = new THREE.SphereGeometry(1.2, 16, 16);
-      const coreMesh = new THREE.Mesh(coreGeo, petalMat);
-      roseGroup.add(coreMesh);
-
-      for (let layer = 0; layer < 3; layer++) {
-        const count = 4 + layer * 2;
-        const radius = 1.2 + layer * 0.8;
-        for (let p = 0; p < count; p++) {
-          const angle = (p / count) * Math.PI * 2 + (layer * 0.5);
-          const petalGeo = new THREE.CircleGeometry(1.2 + layer * 0.3, 12);
-          const petal = new THREE.Mesh(petalGeo, petalMat);
-          petal.position.set(Math.cos(angle) * radius, (Math.random() - 0.5) * 0.4, Math.sin(angle) * radius);
-          petal.rotation.x = Math.PI / 3;
-          petal.rotation.y = -angle;
-          roseGroup.add(petal);
+            return new THREE.CanvasTexture(canvas);
         }
-      }
 
-      const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.rotation.x = Math.PI / 2;
-      roseGroup.add(ring);
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x010105, 0.0015);
 
-      return roseGroup;
-    }
-
-    function initPinkUniverse() {
-      const container = document.getElementById('canvas-container');
-      scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x080105, 0.0015);
-
-      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-      camera.position.set(0, 45, 140);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.toneMapping = THREE.ReinhardToneMapping;
-      renderer.toneMappingExposure = 1.2;
-      container.appendChild(renderer.domElement);
-
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-
-      // UnrealBloom Post-Processing Pass (Softened for Eye Comfort)
-      const renderScene = new THREE.RenderPass(scene, camera);
-      const bloomPass = new THREE.UnrealBloomPass(
-        new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.0, 0.4, 0.3
-      );
-
-      composer = new THREE.EffectComposer(renderer);
-      composer.addPass(renderScene);
-      composer.addPass(bloomPass);
-
-      const ambientLight = new THREE.AmbientLight(0x4a1528, 2.5);
-      scene.add(ambientLight);
-
-      const coreLight = new THREE.PointLight(0xffb3c1, 5, 350);
-      coreLight.position.set(0, 0, 0);
-      scene.add(coreLight);
-
-      // Pink Spiral Galaxy Particles
-      const glowTexture = createGlowTexture();
-      const particleCount = 45000;
-      const geometry = new THREE.BufferGeometry();
-      const positions = new Float32Array(particleCount * 3);
-      const colors = new Float32Array(particleCount * 3);
-
-      const colorCore = new THREE.Color(0xfff0f3);
-      const colorInner = new THREE.Color(0xff85a1);
-      const colorOuter = new THREE.Color(0x780016);
-
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        const radius = Math.pow(Math.random(), 1.2) * 230;
-        const spinAngle = radius * 0.038;
-        const branchAngle = ((i % 4) * Math.PI * 2) / 4;
-
-        const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
-        const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
-        const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
-
-        positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-        positions[i3 + 1] = randomY;
-        positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
-
-        const mixedColor = radius < 30 ? 
-          colorCore.clone().lerp(colorInner, radius / 30) : 
-          colorInner.clone().lerp(colorOuter, (radius - 30) / 200);
-
-        colors[i3] = mixedColor.r;
-        colors[i3 + 1] = mixedColor.g;
-        colors[i3 + 2] = mixedColor.b;
-      }
-
-      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-      const particleMaterial = new THREE.PointsMaterial({
-        size: 2.2,
-        map: glowTexture,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        vertexColors: true,
-        opacity: 0.85
-      });
-
-      galaxyParticles = new THREE.Points(geometry, particleMaterial);
-      scene.add(galaxyParticles);
-
-      // Pink Volumetric Nebula Cloud Layer
-      cloudGroup = new THREE.Group();
-      for (let i = 0; i < 20; i++) {
-        const cloudGeo = new THREE.PlaneGeometry(80, 80);
-        const cloudMat = new THREE.MeshBasicMaterial({
-          map: glowTexture,
-          transparent: true,
-          opacity: 0.06,
-          blending: THREE.AdditiveBlending,
-          color: 0xff4d6d,
-          depthWrite: false,
-          side: THREE.DoubleSide
-        });
-        const cloud = new THREE.Mesh(cloudGeo, cloudMat);
-        const angle = Math.random() * Math.PI * 2;
-        const dist = Math.random() * 140;
-        cloud.position.set(Math.cos(angle) * dist, (Math.random() - 0.5) * 20, Math.sin(angle) * dist);
-        cloud.rotation.x = Math.PI / 2;
-        cloud.rotation.z = Math.random() * Math.PI;
-        cloudGroup.add(cloud);
-      }
-      scene.add(cloudGroup);
-
-      // --- Smaller, Soft Milky-White Rounded 3D Heart ---
-      const heartShape = new THREE.Shape();
-      const x = 0, y = 0;
-      heartShape.moveTo(x, y + 2.5);
-      heartShape.bezierCurveTo(x, y + 2.5, x - 4, y + 8, x - 10, y + 8);
-      heartShape.bezierCurveTo(x - 16, y + 8, x - 16, y + 1, x - 16, y + 1);
-      heartShape.bezierCurveTo(x - 16, y - 4, x - 10, y - 9, x, y - 15);
-      heartShape.bezierCurveTo(x + 10, y - 9, x + 16, y - 4, x + 16, y + 1);
-      heartShape.bezierCurveTo(x + 16, y + 1, x + 16, y + 8, x + 10, y + 8);
-      heartShape.bezierCurveTo(x + 4, y + 8, x, y + 2.5, x, y + 2.5);
-
-      const extrudeSettings = { 
-        depth: 3, 
-        bevelEnabled: true, 
-        bevelSegments: 16, 
-        steps: 4, 
-        bevelSize: 1.2, 
-        bevelThickness: 1.2 
-      };
-      const heartGeo = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
-      heartGeo.center();
-
-      const heartMat = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        emissive: 0xffb3c1,
-        emissiveIntensity: 0.6,
-        roughness: 0.2,
-        metalness: 0.1
-      });
-      centralHeart = new THREE.Mesh(heartGeo, heartMat);
-      centralHeart.scale.set(0.9, 0.9, 0.9); // Smaller, elegant size
-      scene.add(centralHeart);
-
-      // Floating Pink Roses & Messages
-      interactiveGroup = new THREE.Group();
-      scene.add(interactiveGroup);
-
-      const messages = [
-        { title: "MY LOVE", text: "You are the light that guides me through every single day." },
-        { title: "FOREVER", text: "Every moment spent with you feels like a dream come true." },
-        { title: "MY EVERYTHING", text: "Your smile brightens up my whole universe." },
-        { title: "YOU & ME", text: "Pasig or anywhere across the map, my heart stays with you." },
-        { title: "SO BEAUTIFUL", text: "You are my precious treasure and my greatest blessing." }
-      ];
-
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-      const clickableObjects = [];
-
-      messages.forEach((msg, index) => {
-        const angle = (index / messages.length) * Math.PI * 2;
-        const distance = 60 + Math.random() * 30;
-        const posX = Math.cos(angle) * distance;
-        const posZ = Math.sin(angle) * distance;
-        const posY = (Math.random() - 0.5) * 25;
-
-        const roseNode = create3DRose();
-        roseNode.position.set(posX, posY, posZ);
-        roseNode.userData = { title: msg.title, text: msg.text };
-
-        interactiveGroup.add(roseNode);
-        
-        const clickProxyGeo = new THREE.SphereGeometry(4.5, 8, 8);
-        const clickProxyMat = new THREE.MeshBasicMaterial({ visible: false });
-        const clickProxy = new THREE.Mesh(clickProxyGeo, clickProxyMat);
-        clickProxy.userData = { parentNode: roseNode };
-        roseNode.add(clickProxy);
-
-        clickableObjects.push(clickProxy);
-      });
-
-      window.addEventListener('click', (event) => {
-        if (!document.getElementById('galaxy-overlay').classList.contains('active')) return;
-
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(clickableObjects);
-
-        if (intersects.length > 0) {
-          const nodeData = intersects[0].object.userData.parentNode.userData;
-          showModal(nodeData.title, nodeData.text);
-          controls.target.copy(intersects[0].object.userData.parentNode.position);
-        }
-      });
-
-      const modalBackdrop = document.getElementById('modal-backdrop');
-      const cardTitle = document.getElementById('card-title');
-      const cardText = document.getElementById('card-text');
-      const closeModal = document.getElementById('close-modal');
-
-      function showModal(title, text) {
-        cardTitle.innerText = title;
-        cardText.innerText = text;
-        modalBackdrop.classList.add('active');
-      }
-
-      closeModal.addEventListener('click', () => {
-        modalBackdrop.classList.remove('active');
-      });
-
-      document.getElementById('reset-cam').addEventListener('click', () => {
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.position.set(0, 45, 140);
-        controls.target.set(0, 0, 0);
-      });
 
-      document.getElementById('toggle-spin').addEventListener('click', () => {
-        isSpinning = !isSpinning;
-      });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ReinhardToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        container.appendChild(renderer.domElement);
 
-      let clock = new THREE.Clock();
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
 
-      function animateUniverse() {
-        requestAnimationFrame(animateUniverse);
-        const elapsedTime = clock.getElapsedTime();
+        // --- UnrealBloom Post-Processing Pass ---
+        const renderScene = new THREE.RenderPass(scene, camera);
+        const bloomPass = new THREE.UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            1.6, // bloom strength
+            0.4, // radius
+            0.15 // threshold
+        );
 
-        if (isSpinning) {
-          galaxyParticles.rotation.y = elapsedTime * 0.04;
-          interactiveGroup.rotation.y = elapsedTime * 0.04;
-          cloudGroup.rotation.y = elapsedTime * 0.02;
+        const composer = new THREE.EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0x0a1838, 2.5);
+        scene.add(ambientLight);
+
+        const coreLight = new THREE.PointLight(0x00d4ff, 5, 350);
+        coreLight.position.set(0, 0, 0);
+        scene.add(coreLight);
+
+        // --- Particle Spiral Galaxy ---
+        const glowTexture = createGlowTexture();
+        const particleCount = 45000;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        const colorCore = new THREE.Color(0xffffff);
+        const colorInner = new THREE.Color(0x80f0ff);
+        const colorOuter = new THREE.Color(0x0044ff);
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            const radius = Math.pow(Math.random(), 1.2) * 230;
+            const spinAngle = radius * 0.038;
+            const branchAngle = ((i % 4) * Math.PI * 2) / 4;
+
+            const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
+            const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
+            const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 14;
+
+            positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+            positions[i3 + 1] = randomY;
+            positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+
+            const mixedColor = radius < 30 ? 
+                colorCore.clone().lerp(colorInner, radius / 30) : 
+                colorInner.clone().lerp(colorOuter, (radius - 30) / 200);
+
+            colors[i3] = mixedColor.r;
+            colors[i3 + 1] = mixedColor.g;
+            colors[i3 + 2] = mixedColor.b;
         }
 
-        centralHeart.rotation.y = elapsedTime * 0.5;
-        centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-        interactiveGroup.children.forEach(rose => {
-          rose.rotation.y = elapsedTime * 0.8;
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 2.2,
+            map: glowTexture,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            vertexColors: true,
+            opacity: 0.85
         });
 
-        controls.update();
-        composer.render();
-      }
+        const galaxyParticles = new THREE.Points(geometry, particleMaterial);
+        scene.add(galaxyParticles);
 
-      animateUniverse();
+        // --- Volumetric Nebula Cloud Layer ---
+        const cloudGroup = new THREE.Group();
+        for (let i = 0; i < 20; i++) {
+            const cloudGeo = new THREE.PlaneGeometry(80, 80);
+            const cloudMat = new THREE.MeshBasicMaterial({
+                map: glowTexture,
+                transparent: true,
+                opacity: 0.08,
+                blending: THREE.AdditiveBlending,
+                color: 0x0088ff,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            });
+            const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.random() * 140;
+            cloud.position.set(Math.cos(angle) * dist, (Math.random() - 0.5) * 20, Math.sin(angle) * dist);
+            cloud.rotation.x = Math.PI / 2;
+            cloud.rotation.z = Math.random() * Math.PI;
+            cloudGroup.add(cloud);
+        }
+        scene.add(cloudGroup);
 
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        composer.setSize(window.innerWidth, window.innerHeight);
-      });
-    }
-  </script>
+        // --- Central Heart Core ---
+        const heartShape = new THREE.Shape();
+        heartShape.fromPoints([
+            new THREE.Vector2(0, 3),
+            new THREE.Vector2(2, 5),
+            new THREE.Vector2(4, 3),
+            new THREE.Vector2(4, 0),
+            new THREE.Vector2(0, -4),
+            new THREE.Vector2(-4, 0),
+            new THREE.Vector2(-4, 3),
+            new THREE.Vector2(-2, 5),
+            new THREE.Vector2(0, 3)
+        ]);
+
+        const extrudeSettings = { depth: 1.2, bevelEnabled: true, bevelSegments: 6, steps: 2, bevelSize: 0.8, bevelThickness: 0.8 };
+        const heartGeo = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+        heartGeo.center();
+
+        const heartMat = new THREE.MeshStandardMaterial({
+            color: 0x00e1ff,
+            emissive: 0x0088ff,
+            emissiveIntensity: 1.2,
+            roughness: 0.1,
+            metalness: 0.1
+        });
+        const centralHeart = new THREE.Mesh(heartGeo, heartMat);
+        centralHeart.scale.set(3.2, 3.2, 3.2);
+        scene.add(centralHeart);
+
+        // --- Procedural 3D Blue Rose Geometry Function ---
+        function create3DRose() {
+            const roseGroup = new THREE.Group();
+            const petalMat = new THREE.MeshStandardMaterial({
+                color: 0x00c8ff,
+                emissive: 0x0044ff,
+                emissiveIntensity: 0.8,
+                roughness: 0.2,
+                side: THREE.DoubleSide
+            });
+
+            // Core sphere
+            const coreGeo = new THREE.SphereGeometry(1.2, 16, 16);
+            const coreMesh = new THREE.Mesh(coreGeo, petalMat);
+            roseGroup.add(coreMesh);
+
+            // Layered Petals
+            for (let layer = 0; layer < 3; layer++) {
+                const count = 4 + layer * 2;
+                const radius = 1.2 + layer * 0.8;
+                for (let p = 0; p < count; p++) {
+                    const angle = (p / count) * Math.PI * 2 + (layer * 0.5);
+                    const petalGeo = new THREE.CircleGeometry(1.2 + layer * 0.3, 12);
+                    const petal = new THREE.Mesh(petalGeo, petalMat);
+                    petal.position.set(Math.cos(angle) * radius, (Math.random() - 0.5) * 0.4, Math.sin(angle) * radius);
+                    petal.rotation.x = Math.PI / 3;
+                    petal.rotation.y = -angle;
+                    roseGroup.add(petal);
+                }
+            }
+
+            // Outer Orbit Glow Ring
+            const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            roseGroup.add(ring);
+
+            return roseGroup;
+        }
+
+        // --- Floating Blue Roses & Messages ---
+        const interactiveGroup = new THREE.Group();
+        scene.add(interactiveGroup);
+
+        const messages = [
+            { title: "MY LOVE", text: "You are the light that guides me through every single day." },
+            { title: "FOREVER", text: "Every moment spent with you feels like a dream come true." },
+            { title: "MY EVERYTHING", text: "Your smile brightens up my whole universe." },
+            { title: "YOU & ME", text: "Pasig or anywhere across the map, my heart stays with you." },
+            { title: "SO BEAUTIFUL", text: "You are my precious treasure and my greatest blessing." }
+        ];
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const clickableObjects = [];
+
+        messages.forEach((msg, index) => {
+            const angle = (index / messages.length) * Math.PI * 2;
+            const distance = 60 + Math.random() * 30;
+            const x = Math.cos(angle) * distance;
+            const z = Math.sin(angle) * distance;
+            const y = (Math.random() - 0.5) * 25;
+
+            const roseNode = create3DRose();
+            roseNode.position.set(x, y, z);
+            roseNode.userData = { title: msg.title, text: msg.text };
+
+            interactiveGroup.add(roseNode);
+            
+            // Add bounding sphere for click detection
+            const clickProxyGeo = new THREE.SphereGeometry(4.5, 8, 8);
+            const clickProxyMat = new THREE.MeshBasicMaterial({ visible: false });
+            const clickProxy = new THREE.Mesh(clickProxyGeo, clickProxyMat);
+            clickProxy.userData = { parentNode: roseNode };
+            roseNode.add(clickProxy);
+
+            clickableObjects.push(clickProxy);
+        });
+
+        // Click Handler & UI
+        let isSpinning = true;
+
+        window.addEventListener('click', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(clickableObjects);
+
+            if (intersects.length > 0) {
+                const nodeData = intersects[0].object.userData.parentNode.userData;
+                showModal(nodeData.title, nodeData.text);
+                controls.target.copy(intersects[0].object.userData.parentNode.position);
+            }
+        });
+
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const cardTitle = document.getElementById('card-title');
+        const cardText = document.getElementById('card-text');
+        const closeModal = document.getElementById('close-modal');
+
+        function showModal(title, text) {
+            cardTitle.innerText = title;
+            cardText.innerText = text;
+            modalBackdrop.classList.add('active');
+        }
+
+        closeModal.addEventListener('click', () => {
+            modalBackdrop.classList.remove('active');
+        });
+
+        document.getElementById('reset-cam').addEventListener('click', () => {
+            camera.position.set(0, 45, 140);
+            controls.target.set(0, 0, 0);
+        });
+
+        document.getElementById('toggle-spin').addEventListener('click', () => {
+            isSpinning = !isSpinning;
+        });
+
+        // Animation Loop
+        let clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            if (isSpinning) {
+                galaxyParticles.rotation.y = elapsedTime * 0.04;
+                interactiveGroup.rotation.y = elapsedTime * 0.04;
+                cloudGroup.rotation.y = elapsedTime * 0.02;
+            }
+
+            centralHeart.rotation.y = elapsedTime * 0.5;
+            centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
+
+            // Rotate rose nodes
+            interactiveGroup.children.forEach(rose => {
+                rose.rotation.y = elapsedTime * 0.8;
+            });
+
+            controls.update();
+            composer.render();
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
