@@ -8,8 +8,7 @@
     :root {
       --primary: #ff4d6d;
       --secondary: #ff758f;
-      --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #feada6 100%);
-      --card-bg: rgba(255, 255, 255, 0.92);
+      --card-bg: rgba(20, 10, 35, 0.75);
     }
 
     * {
@@ -20,14 +19,89 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-gradient);
+      background: #05020a;
       min-height: 100vh;
-      color: #2c3e50;
+      color: #ffffff;
       overflow-x: hidden;
       padding-bottom: 50px;
+      position: relative;
+    }
+
+    /* 🌌 GALAXY & STARRY BACKGROUND ANIMATION 🌌 */
+    .galaxy-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, #1b0c33 0%, #080214 70%, #000000 100%);
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Swirling Galaxy Spiral */
+    .galaxy-spiral {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      width: 500px;
+      height: 500px;
+      margin-top: -250px;
+      margin-left: -250px;
+      background: radial-gradient(circle, rgba(255,117,143,0.35) 0%, rgba(201,24,74,0.15) 40%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(30px);
+      animation: spin 20s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.15); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* Floating Star Particles */
+    .star-particle {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      animation: floatStar linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatStar {
+      0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* Glowing Heart Constellation in Space Header */
+    .heart-constellation {
+      font-size: 3.5rem;
+      color: #ff758f;
+      text-shadow: 0 0 20px #ff4d6d, 0 0 40px #ff0055;
+      animation: pulseGlow 2s ease-in-out infinite alternate;
+      margin-bottom: 10px;
+    }
+
+    @keyframes pulseGlow {
+      from { transform: scale(1); filter: drop-shadow(0 0 10px #ff4d6d); }
+      to { transform: scale(1.15); filter: drop-shadow(0 0 25px #ff758f); }
     }
 
     .container {
+      position: relative;
+      z-index: 10;
       max-width: 850px;
       margin: 0 auto;
       padding: 20px;
@@ -41,13 +115,14 @@
 
     h1 {
       font-size: 2.8rem;
-      background: linear-gradient(45deg, #c9184a, #ff4d6d, #ff758f, #c9184a);
-      background-size: 300% 300%;
+      background: linear-gradient(45deg, #ff758f, #ffffff, #ff4d6d);
+      background-size: 200% 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: gradientShift 4s ease infinite;
       margin-bottom: 10px;
       font-weight: 800;
+      text-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
     }
 
     @keyframes gradientShift {
@@ -58,20 +133,21 @@
 
     .subtitle {
       font-size: 1.2rem;
-      color: #590d22;
+      color: #ffb3c1;
       font-style: italic;
+      text-shadow: 0 0 10px rgba(255, 179, 193, 0.4);
     }
 
     .heart-btn {
-      background: var(--primary);
+      background: linear-gradient(45deg, #ff4d6d, #c9184a);
       color: white;
-      border: none;
+      border: 1px solid rgba(255,255,255,0.4);
       font-size: 1.4rem;
       font-weight: 600;
       padding: 16px 36px;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
+      box-shadow: 0 0 25px rgba(255, 77, 109, 0.6);
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       margin: 25px 0 35px 0;
       animation: pulse 1.8s infinite;
@@ -79,8 +155,7 @@
 
     .heart-btn:hover {
       transform: scale(1.1) translateY(-3px);
-      background: #c9184a;
-      box-shadow: 0 15px 30px rgba(255, 77, 109, 0.6);
+      box-shadow: 0 0 40px rgba(255, 77, 109, 0.9);
     }
 
     @keyframes pulse {
@@ -99,28 +174,25 @@
     }
 
     .polaroid {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.95);
       padding: 14px 14px 20px 14px;
-      border-radius: 6px;
-      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(255, 77, 109, 0.3);
       text-align: center;
       width: 230px;
       transition: all 0.4s ease;
       position: relative;
+      color: #2c3e50;
+      backdrop-filter: blur(5px);
     }
 
     .polaroid::before {
-      content: '';
+      content: '✨';
       position: absolute;
-      top: -8px;
+      top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      width: 14px;
-      height: 14px;
-      background: #ff4d6d;
-      border-radius: 50%;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-      z-index: 5;
+      font-size: 1.2rem;
     }
 
     .polaroid img {
@@ -144,21 +216,22 @@
 
     .polaroid:hover {
       transform: rotate(0deg) scale(1.08) translateY(-10px);
-      box-shadow: 0 20px 35px rgba(0,0,0,0.25);
+      box-shadow: 0 20px 40px rgba(255, 117, 143, 0.6);
       z-index: 30;
     }
 
     .card {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
       border-radius: 20px;
       padding: 35px;
       margin: 25px 0;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 0 30px rgba(255, 77, 109, 0.25);
+      border: 1px solid rgba(255, 117, 143, 0.3);
       text-align: left;
       line-height: 1.8;
       font-size: 1.1rem;
+      color: #fff0f3;
     }
 
     .hidden-message {
@@ -191,7 +264,7 @@
       text-align: right;
       margin-top: 25px;
       font-weight: bold;
-      color: #c9184a;
+      color: #ff758f;
       font-size: 1.25rem;
     }
 
@@ -200,26 +273,34 @@
     }
 
     .reason-item {
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.1);
       margin: 12px 0;
       padding: 14px 22px;
       border-left: 5px solid var(--primary);
       border-radius: 10px;
       transition: transform 0.3s ease;
+      color: #ffffff;
     }
 
     .reason-item:hover {
       transform: translateX(8px);
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
 <body>
 
+  <!-- 🌌 Galaxy Backdrop -->
+  <div class="galaxy-bg">
+    <div class="galaxy-spiral"></div>
+    <div id="star-field"></div>
+  </div>
+
   <canvas id="confetti-canvas"></canvas>
 
   <div class="container">
     <header>
+      <div class="heart-constellation">🌌 💖 🌌</div>
       <h1>Happy Birthday! 🎂✨</h1>
       <p class="subtitle">October 25th — A special day for my babyyyyyyyy.</p>
     </header>
@@ -249,7 +330,7 @@
 
       <!-- Main Message Card -->
       <div class="card">
-        <h2>Dear Therizzz!,</h2>
+        <h2 style="color: #ff758f;">Dear Therizzz!,</h2>
         <p style="margin-top: 15px;">
           I wanted to build something unique for your birthday because standard messages just aren't enough to show how much you mean to me. 
         </p>
@@ -258,7 +339,7 @@
         </p>
 
         <div class="reasons">
-          <h3 style="color: #c9184a; margin-top: 20px; margin-bottom: 10px;">A few things I adore about you:</h3>
+          <h3 style="color: #ff758f; margin-top: 20px; margin-bottom: 10px;">A few things I adore about you:</h3>
           <div class="reason-item">✨ The genuine warmth in your smile when you're truly happy.</div>
           <div class="reason-item">🌸 How effortlessly kind and thoughtful you are to others.</div>
           <div class="reason-item">💫 How every conversation with you makes my day so much brighter.</div>
@@ -279,6 +360,29 @@
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script>
+    // Generate Floating Galaxy Stars
+    function generateGalaxyStars() {
+      const starField = document.getElementById('star-field');
+      const starCount = 60;
+
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star-particle');
+        
+        const size = Math.random() * 3 + 1; // 1px - 4px
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.animationDuration = (Math.random() * 4 + 3) + 's'; // 3s - 7s
+        star.style.animationDelay = (Math.random() * 5) + 's';
+        
+        starField.appendChild(star);
+      }
+    }
+
+    generateGalaxyStars();
+
     function revealSurprise() {
       const surpriseCard = document.getElementById('surprise');
       surpriseCard.style.display = 'block';
