@@ -488,7 +488,7 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization with Selective Bloom ---
+    // --- Pink Universe 3D Initialization ---
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart, sparkleParticles;
     let isSpinning = true;
@@ -498,23 +498,6 @@
     const roseNodesList = [];
     const sparkleCount = 1200;
     let sparkleGeo, sparklePos;
-
-    const darkMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    const materials = {};
-
-    function darkenNonBloomed(obj) {
-      if (obj.isMesh) {
-        materials[obj.uuid] = obj.material;
-        obj.material = darkMaterial;
-      }
-    }
-
-    function restoreMaterial(obj) {
-      if (materials[obj.uuid]) {
-        obj.material = materials[obj.uuid];
-        delete materials[obj.uuid];
-      }
-    }
 
     function launch3DGalaxy() {
       const overlay = document.getElementById('galaxy-overlay');
@@ -597,11 +580,11 @@
       const frameGroup = new THREE.Group();
 
       const borderGeo = new THREE.PlaneGeometry(24, 28);
-      const borderMat = new THREE.MeshStandardMaterial({
+      const borderMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        roughness: 0.3,
         side: THREE.DoubleSide
       });
+      borderMat.toneMapped = false;
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
       frameGroup.add(borderMesh);
 
@@ -618,6 +601,7 @@
             map: texture,
             side: THREE.DoubleSide
           });
+          photoMat.toneMapped = false;
           const photoMesh = new THREE.Mesh(photoGeo, photoMat);
           photoMesh.position.set(0, 2, 0.08);
           frameGroup.add(photoMesh);
@@ -626,6 +610,7 @@
         () => {
           const fallbackGeo = new THREE.PlaneGeometry(21, 21);
           const fallbackMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide });
+          fallbackMat.toneMapped = false;
           const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
           fallbackMesh.position.set(0, 2, 0.08);
           frameGroup.add(fallbackMesh);
@@ -639,6 +624,7 @@
         opacity: 0.4,
         side: THREE.DoubleSide
       });
+      shadowMat.toneMapped = false;
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
       shadowMesh.position.set(0, 0, -0.08);
       frameGroup.add(shadowMesh);
@@ -669,7 +655,7 @@
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.2, 0.4, 0.15
+        1.2, 0.4, 0.6
       );
 
       composer = new THREE.EffectComposer(renderer);
@@ -802,7 +788,7 @@
       const heartMat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         emissive: 0xffb3c1,
-        emissiveIntensity: 1.2,
+        emissiveIntensity: 1.5,
         roughness: 0.2,
         metalness: 0.1
       });
@@ -916,19 +902,8 @@
 
         controls.update();
 
-        // --- Selective Bloom Rendering Pass ---
-        // 1. Temporarily hide/darken photo frames for the bloom pass
-        photoPlanes.forEach(photoGroup => {
-          photoGroup.traverse(darkenNonBloomed);
-        });
-
-        // 2. Render glow/bloom composer (blooms heart, roses, and galaxy)
+        // Render the scene with composer bloom
         composer.render();
-
-        // 3. Restore original photo frames so they stay crystal clear
-        photoPlanes.forEach(photoGroup => {
-          photoGroup.traverse(restoreMaterial);
-        });
       }
 
       animateUniverse();
