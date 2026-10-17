@@ -72,30 +72,9 @@
     }
 
     header {
-      margin-top: 40px;
+      margin-top: 50px;
       margin-bottom: 25px;
       position: relative;
-    }
-
-    /* VIP Birthday Badge */
-    .vip-badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 77, 109, 0.3);
-      padding: 6px 18px;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #c9184a;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.15);
-      animation: badgePulse 2s infinite ease-in-out;
-    }
-
-    @keyframes badgePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.04); }
     }
 
     .title-wrapper {
@@ -103,25 +82,18 @@
       display: inline-block;
     }
 
-    /* Floating decorative header elements */
+    /* Stationary decorative header elements */
     .deco-ribbon {
       position: absolute;
-      top: -15px;
+      top: -10px;
       left: -45px;
       font-size: 2rem;
-      animation: floatSide 3s ease-in-out infinite alternate;
     }
     .deco-balloon {
       position: absolute;
-      top: -20px;
+      top: -15px;
       right: -45px;
       font-size: 2rem;
-      animation: floatSide 3.5s ease-in-out infinite alternate-reverse;
-    }
-
-    @keyframes floatSide {
-      from { transform: translateY(0) rotate(-5deg); }
-      to { transform: translateY(-8px) rotate(8deg); }
     }
 
     h1 {
@@ -475,7 +447,6 @@
   <!-- First Page Content -->
   <div class="container">
     <header>
-      <div class="vip-badge">🎉 VIP Birthday Celebration ✨</div>
       <div class="title-wrapper">
         <span class="deco-ribbon">🎀</span>
         <h1>Happy Birthday! 🎂</h1>
