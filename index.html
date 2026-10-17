@@ -488,7 +488,7 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization with Restored Vibrant Glow & Sharp Photos ---
+    // --- Pink Universe 3D Initialization with Non-Glowing Crisp Photos ---
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
     let isSpinning = true;
@@ -572,7 +572,7 @@
       return roseGroup;
     }
 
-    // Function to create High-Visibility 3D Polaroid Frame with Crisp Photo Texture
+    // Function to create Crystal-Clear 3D Polaroid Frame with NO Bloom/Glow
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
@@ -581,6 +581,7 @@
         color: 0xffffff,
         side: THREE.DoubleSide
       });
+      borderMat.toneMapped = false; // Bypasses bloom & tone mapping completely
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
       frameGroup.add(borderMesh);
 
@@ -598,6 +599,7 @@
             map: texture,
             side: THREE.DoubleSide
           });
+          photoMat.toneMapped = false; // Ensures photo pixels remain crystal sharp and unaffected by bloom glow
           const photoMesh = new THREE.Mesh(photoGeo, photoMat);
           photoMesh.position.set(0, 1.2, 0.08);
           frameGroup.add(photoMesh);
@@ -606,6 +608,7 @@
         () => {
           const fallbackGeo = new THREE.PlaneGeometry(14, 15);
           const fallbackMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide });
+          fallbackMat.toneMapped = false;
           const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
           fallbackMesh.position.set(0, 1.2, 0.08);
           frameGroup.add(fallbackMesh);
@@ -619,6 +622,7 @@
         opacity: 0.8,
         side: THREE.DoubleSide
       });
+      shadowMat.toneMapped = false;
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
       shadowMesh.position.set(0, 0, -0.08);
       frameGroup.add(shadowMesh);
@@ -646,13 +650,13 @@
       controls.dampingFactor = 0.05;
       controls.enabled = false;
 
-      // Restored Vibrant Bloom Pass for the "Alive" Glowing Galaxy Effect
+      // Vibrant Bloom Pass for the Galaxy & Heart
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.5,  // High vibrant glow strength back!
+        1.5,  
         0.4, 
-        0.2   // Low threshold so particles and roses glow intensely
+        0.2   
       );
 
       composer = new THREE.EffectComposer(renderer);
@@ -721,7 +725,7 @@
         const cloudMat = new THREE.MeshBasicMaterial({
           map: glowTexture,
           transparent: true,
-          opacity: 0.12, // Brighter nebula clouds
+          opacity: 0.12,
           blending: THREE.AdditiveBlending,
           color: 0xff4d6d,
           depthWrite: false,
@@ -761,7 +765,7 @@
       const heartMat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         emissive: 0xff758f,
-        emissiveIntensity: 1.5, // Radiant glowing heart
+        emissiveIntensity: 1.5,
         roughness: 0.15,
         metalness: 0.1
       });
