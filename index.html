@@ -27,6 +27,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      user-select: none; /* Prevents text highlighting / accidental dragging shifts */
     }
 
     body {
@@ -82,7 +83,6 @@
       display: inline-block;
     }
 
-    /* Completely stationary decorative header elements */
     .deco-ribbon {
       position: absolute;
       top: -10px;
@@ -111,7 +111,6 @@
       font-weight: 500;
     }
 
-    /* Solid Envelope Greeting Box (Prevents background motion illusion) */
     .envelope-box {
       background: #ffffff;
       border: 2px dashed rgba(255, 77, 109, 0.5);
@@ -245,7 +244,6 @@
       z-index: 99;
     }
 
-    /* Click Burst Heart Effect */
     .burst-heart {
       position: fixed;
       font-size: 1.4rem;
@@ -586,7 +584,6 @@
         const heart = document.createElement('div');
         heart.classList.add('ambient-heart');
         heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-        // Keep particles to left/right edges so they don't float directly behind text
         const isLeft = Math.random() < 0.5;
         heart.style.left = isLeft ? (Math.random() * 20) + 'vw' : (80 + Math.random() * 20) + 'vw';
         heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
@@ -652,7 +649,6 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // Lightbox Handlers for Card Polaroids
     function openLightbox(imgSrc, captionText) {
       const modal = document.getElementById('lightbox-modal');
       const modalImg = document.getElementById('lightbox-img');
