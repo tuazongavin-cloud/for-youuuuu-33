@@ -488,7 +488,8 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization ---
+    // --- Pink Universe 3D Initialization with Selective Layer Bloom ---
+    const BLOOM_LAYER = 1;
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart, sparkleParticles;
     let isSpinning = true;
@@ -538,12 +539,18 @@
       return new THREE.CanvasTexture(canvas);
     }
 
+    // Helper to assign glowing elements to Layer 1 (Bloom Layer)
+    function enableBloomLayer(object) {
+      object.layers.enable(BLOOM_LAYER);
+      object.traverse((child) => child.layers.enable(BLOOM_LAYER));
+    }
+
     function create3DRose() {
       const roseGroup = new THREE.Group();
       const petalMat = new THREE.MeshStandardMaterial({
         color: 0xff758f,
         emissive: 0xc9184a,
-        emissiveIntensity: 0.8,
+        emissiveIntensity: 1.2,
         roughness: 0.2,
         side: THREE.DoubleSide
       });
@@ -567,23 +574,27 @@
       }
 
       const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.95 });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       roseGroup.add(ring);
       roseGroup.userData.ring = ring;
 
+      // Assign Rose to Bloom Layer
+      enableBloomLayer(roseGroup);
+
       return roseGroup;
     }
 
-    // Fully Non-Glares 3D Photo Frame Implementation
+    // Photo Frames remain on Layer 0 (Standard Layer without Bloom)
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
-      // Dark polaroid backing prevents blooming border glare completely
+      // Clean White Polaroid Border restored
       const borderGeo = new THREE.PlaneGeometry(24, 28);
-      const borderMat = new THREE.MeshBasicMaterial({
-        color: 0x22181c,
+      const borderMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.3,
         side: THREE.DoubleSide
       });
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
@@ -598,10 +609,8 @@
           texture.magFilter = THREE.LinearFilter;
 
           const photoGeo = new THREE.PlaneGeometry(21, 21);
-          // Controlled texture color scale ensures zero white pixel blowout
           const photoMat = new THREE.MeshBasicMaterial({
             map: texture,
-            color: 0x999999,
             side: THREE.DoubleSide
           });
           const photoMesh = new THREE.Mesh(photoGeo, photoMat);
@@ -622,7 +631,7 @@
       const shadowMat = new THREE.MeshBasicMaterial({
         color: 0xff4d6d,
         transparent: true,
-        opacity: 0.3,
+        opacity: 0.4,
         side: THREE.DoubleSide
       });
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
@@ -644,7 +653,8 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ReinhardToneMapping;
-      renderer.toneMappingExposure = 1.0;
+      renderer.toneMappingExposure = 1.2;
+      renderer.autoClear = false; // Required for layered post-processing
       container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -652,21 +662,22 @@
       controls.dampingFactor = 0.05;
       controls.enabled = false;
 
-      // Selective threshold pass keeps galaxy & roses blooming while excluding photos
+      // --- Post-Processing Setup for Selective Bloom ---
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        0.9, 0.4, 0.55
+        1.2, 0.4, 0.1
       );
 
       composer = new THREE.EffectComposer(renderer);
+      composer.renderToScreen = false;
       composer.addPass(renderScene);
       composer.addPass(bloomPass);
 
-      const ambientLight = new THREE.AmbientLight(0x4a1528, 2.0);
+      const ambientLight = new THREE.AmbientLight(0x4a1528, 2.5);
       scene.add(ambientLight);
 
-      const coreLight = new THREE.PointLight(0xffb3c1, 4, 350);
+      const coreLight = new THREE.PointLight(0xffb3c1, 5, 350);
       coreLight.position.set(0, 0, 0);
       scene.add(coreLight);
 
@@ -717,9 +728,10 @@
       });
 
       galaxyParticles = new THREE.Points(geometry, particleMaterial);
+      enableBloomLayer(galaxyParticles);
       scene.add(galaxyParticles);
 
-      // Upward Floating Sparkles
+      // Upward Floating Sparkles (Bloom Layer)
       sparkleGeo = new THREE.BufferGeometry();
       sparklePos = new Float32Array(sparkleCount * 3);
 
@@ -740,6 +752,7 @@
         depthWrite: false
       });
       sparkleParticles = new THREE.Points(sparkleGeo, sparkleMat);
+      enableBloomLayer(sparkleParticles);
       scene.add(sparkleParticles);
 
       cloudGroup = new THREE.Group();
@@ -762,9 +775,10 @@
         cloud.rotation.z = Math.random() * Math.PI;
         cloudGroup.add(cloud);
       }
+      enableBloomLayer(cloudGroup);
       scene.add(cloudGroup);
 
-      // Central 3D Heart
+      // Central Glowing 3D Heart (Bloom Layer)
       const heartShape = new THREE.Shape();
       const x = 0, y = 0;
       heartShape.moveTo(x, y + 2.5);
@@ -789,18 +803,19 @@
       const heartMat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         emissive: 0xffb3c1,
-        emissiveIntensity: 0.6,
+        emissiveIntensity: 0.8,
         roughness: 0.2,
         metalness: 0.1
       });
       centralHeart = new THREE.Mesh(heartGeo, heartMat);
       centralHeart.scale.set(0.9, 0.9, 0.9);
+      enableBloomLayer(centralHeart);
       scene.add(centralHeart);
 
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
-      // 14 Floating Animated Roses
+      // 14 Floating Animated Roses (Bloom Layer)
       const roseCount = 14;
       for (let i = 0; i < roseCount; i++) {
         const angle = (i / roseCount) * Math.PI * 2;
@@ -821,7 +836,7 @@
         roseNodesList.push(roseNode);
       }
 
-      // 5 Floating 3D Photos around the Heart
+      // 5 Floating 3D Photos around the Heart (Non-Bloom Layer 0)
       const photoFiles = ['3dphoto1.jpg', '3dphoto2.jpg', '3dphoto3.jpg', '3dphoto4.jpg', '3dphoto5.jpg'];
       
       photoFiles.forEach((file, index) => {
@@ -902,7 +917,18 @@
         sparkleGeo.attributes.position.needsUpdate = true;
 
         controls.update();
+
+        // --- Selective Layer Rendering ---
+        renderer.clear();
+
+        // 1. Render Blooming Universe Objects (Layer 1)
+        camera.layers.set(BLOOM_LAYER);
         composer.render();
+
+        // 2. Render Non-Blooming Photo Frames (Layer 0) on top
+        renderer.clearDepth();
+        camera.layers.set(0);
+        renderer.render(scene, camera);
       }
 
       animateUniverse();
