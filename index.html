@@ -260,7 +260,7 @@
 
   <div class="container">
     <header>
-      <h1>Happy Birthday! GANDAAA!</h1>
+      <h1>Happy Birthday! 🎂✨</h1>
       <p class="subtitle">October 25th — A special day for my babyyyyyyyy.</p>
     </header>
 
@@ -314,6 +314,25 @@
         </div>
       </div>
 
+      <!-- Second Button for More Surprises -->
+      <div style="text-align: center; margin: 35px 0;">
+        <button class="heart-btn" onclick="revealMoreSurprises()">Click for More Surprises 🎁✨</button>
+      </div>
+
+      <!-- Hidden Extra Surprise Card -->
+      <div id="more-surprise" class="hidden-message">
+        <div class="card" style="border: 2px dashed var(--primary); text-align: center;">
+          <h2 style="color: #c9184a; margin-bottom: 15px;">🎉 Bonus Surprise! 🎉</h2>
+          <p style="font-size: 1.15rem; line-height: 1.8;">
+            You unlocked the secret final level! 🥳<br>
+            Pasig City or anywhere in the world, whenever you need someone to lean on, make you laugh, or treat you like a queen—I'll always be right here. Thank you for being the most wonderful person in my life. Happy Birthday again, my love! ❤️
+          </p>
+          <div style="font-size: 2.5rem; margin-top: 15px;">
+            💖 🌸 🎂 ✨ 💫
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -323,7 +342,7 @@
 
     // 💖 Ambient Floating Background Hearts (Starts ONLY after clicking surprise)
     function startAmbientHearts() {
-      if (ambientHeartsInterval) return; // prevent duplicates
+      if (ambientHeartsInterval) return;
       const symbols = ['💖', '✨', '🌸', '💕', '⭐'];
       
       ambientHeartsInterval = setInterval(() => {
@@ -396,6 +415,19 @@
       fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
       fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
       fire(0.1, { spread: 120, startVelocity: 45 });
+    }
+
+    function revealMoreSurprises() {
+      const moreCard = document.getElementById('more-surprise');
+      moreCard.style.display = 'block';
+      moreCard.scrollIntoView({ behavior: 'smooth' });
+
+      // Extra big confetti burst for the bonus surprise!
+      confetti({
+        particleCount: 150,
+        spread: 120,
+        origin: { y: 0.8 }
+      });
     }
   </script>
 </body>
