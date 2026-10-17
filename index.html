@@ -264,14 +264,14 @@
       background: rgba(255, 255, 255, 0.95);
     }
 
-    /* --- Hyper-Smooth 3D Blue Galaxy Fullscreen Overlay Styles --- */
+    /* --- Pink Universe 3D Fullscreen Overlay Styles --- */
     #galaxy-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #010105;
+      background-color: #080105;
       z-index: 9999;
       display: none;
       opacity: 0;
@@ -299,45 +299,22 @@
       pointer-events: none;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      padding: 25px;
-    }
-    .galaxy-header {
-      text-align: center;
-      pointer-events: auto;
-      background: rgba(2, 4, 15, 0.6);
-      padding: 12px 30px;
-      border-radius: 24px;
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(0, 225, 255, 0.25);
-      box-shadow: 0 0 30px rgba(0, 150, 255, 0.25);
-    }
-    .galaxy-header h2 {
-      font-size: 1.8rem;
-      font-weight: 300;
-      letter-spacing: 4px;
-      color: #e0f7ff;
-      text-shadow: 0 0 15px rgba(0, 225, 255, 0.9);
-    }
-    .galaxy-header p.instructions {
-      font-size: 0.8rem;
-      color: #8be0ff;
-      margin-top: 4px;
-      letter-spacing: 1px;
+      padding: 30px;
     }
     .galaxy-controls-bar {
       pointer-events: auto;
       display: flex;
       gap: 15px;
-      background: rgba(8, 12, 28, 0.75);
-      padding: 10px 24px;
+      background: rgba(20, 8, 18, 0.75);
+      padding: 12px 28px;
       border-radius: 30px;
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 117, 143, 0.2);
     }
     button.galaxy-btn {
-      background: linear-gradient(135deg, #0066ff, #00d4ff);
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
       border: none;
       color: white;
       padding: 10px 22px;
@@ -346,11 +323,11 @@
       font-size: 0.85rem;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 0 12px rgba(0, 170, 255, 0.4);
+      box-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
     }
     button.galaxy-btn:hover {
       transform: translateY(-2px) scale(1.04);
-      box-shadow: 0 0 20px rgba(0, 220, 255, 0.8);
+      box-shadow: 0 0 22px rgba(255, 77, 109, 0.8);
     }
     /* Modal Card for Love Letters in 3D Galaxy */
     .modal-backdrop {
@@ -359,7 +336,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 4, 12, 0.7);
+      background: rgba(10, 2, 8, 0.75);
       backdrop-filter: blur(8px);
       z-index: 10;
       display: flex;
@@ -374,41 +351,41 @@
       pointer-events: auto;
     }
     .love-card-3d {
-      background: linear-gradient(145deg, #ffffff, #edf7ff);
-      color: #0d1b2a;
+      background: linear-gradient(145deg, #ffffff, #fff0f3);
+      color: #590d22;
       width: 320px;
       padding: 32px 28px;
       border-radius: 20px;
       text-align: center;
-      box-shadow: 0 20px 45px rgba(0, 180, 255, 0.35);
+      box-shadow: 0 20px 45px rgba(255, 77, 109, 0.35);
       transform: scale(0.8) translateY(20px);
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border: 1px solid rgba(0, 180, 255, 0.3);
+      border: 1px solid rgba(255, 117, 143, 0.3);
     }
     .modal-backdrop.active .love-card-3d {
       transform: scale(1) translateY(0);
     }
     .love-card-3d h3 {
       font-size: 1.6rem;
-      color: #0066ff;
+      color: #c9184a;
       margin-bottom: 14px;
       letter-spacing: 3px;
     }
     .love-card-3d p {
       font-size: 0.95rem;
       line-height: 1.6;
-      color: #2b3a4a;
+      color: #4a202c;
       margin-bottom: 22px;
     }
     .close-modal-btn {
-      background: linear-gradient(135deg, #0066ff, #00c3ff);
+      background: linear-gradient(135deg, #ff4d6d, #c9184a);
       color: white;
       border: none;
       padding: 10px 28px;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 600;
-      box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
       transition: all 0.2s;
     }
     .close-modal-btn:hover {
@@ -477,7 +454,7 @@
         </div>
       </div>
 
-      <!-- Button that launches the Hyper-Smooth 3D Blue Galaxy -->
+      <!-- Button that launches the Pink Universe -->
       <div style="text-align: center; margin: 35px 0;">
         <button class="heart-btn" onclick="launch3DGalaxy()">Click for More Surprises 🎁✨</button>
       </div>
@@ -485,20 +462,15 @@
     </div>
   </div>
 
-  <!-- 🌌 Hyper-Smooth 3D Blue Galaxy Overlay Screen -->
+  <!-- 🌌 Pink Universe 3D Fullscreen Overlay Screen -->
   <div id="galaxy-overlay">
     <div id="canvas-container"></div>
 
     <div class="galaxy-ui-overlay">
-      <div class="galaxy-header">
-        <h2>Blue Galaxy of Love</h2>
-        <p class="instructions">Orbit with drag • Scroll to zoom • Click glowing roses to view letters</p>
-      </div>
-
       <div class="galaxy-controls-bar">
         <button class="galaxy-btn" id="reset-cam">Reset View</button>
         <button class="galaxy-btn" id="toggle-spin">Toggle Spin</button>
-        <button class="galaxy-btn" id="close-galaxy" style="background: linear-gradient(135deg, #ff4d6d, #c9184a);">Back to Cards</button>
+        <button class="galaxy-btn" id="close-galaxy" style="background: linear-gradient(135deg, #590d22, #2c1a22);">Back to Cards</button>
       </div>
     </div>
 
@@ -593,7 +565,7 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Hyper-Smooth 3D Galaxy Initialization ---
+    // --- Pink Universe 3D Initialization ---
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
     let isSpinning = true;
@@ -603,7 +575,7 @@
       overlay.classList.add('active');
 
       if (!galaxyInitialized) {
-        init3DGalaxy();
+        initPinkUniverse();
         galaxyInitialized = true;
       }
     }
@@ -620,9 +592,9 @@
 
       const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
       gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-      gradient.addColorStop(0.15, 'rgba(200, 245, 255, 0.85)');
-      gradient.addColorStop(0.4, 'rgba(0, 160, 255, 0.35)');
-      gradient.addColorStop(0.7, 'rgba(0, 60, 200, 0.08)');
+      gradient.addColorStop(0.15, 'rgba(255, 200, 220, 0.85)');
+      gradient.addColorStop(0.4, 'rgba(255, 77, 109, 0.35)');
+      gradient.addColorStop(0.7, 'rgba(180, 20, 80, 0.08)');
       gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
       ctx.fillStyle = gradient;
@@ -636,8 +608,8 @@
     function create3DRose() {
       const roseGroup = new THREE.Group();
       const petalMat = new THREE.MeshStandardMaterial({
-        color: 0x00c8ff,
-        emissive: 0x0044ff,
+        color: 0xff758f,
+        emissive: 0xc9184a,
         emissiveIntensity: 0.8,
         roughness: 0.2,
         side: THREE.DoubleSide
@@ -662,7 +634,7 @@
       }
 
       const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       roseGroup.add(ring);
@@ -670,10 +642,10 @@
       return roseGroup;
     }
 
-    function init3DGalaxy() {
+    function initPinkUniverse() {
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x010105, 0.0015);
+      scene.fog = new THREE.FogExp2(0x080105, 0.0015);
 
       camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
       camera.position.set(0, 45, 140);
@@ -689,7 +661,7 @@
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
 
-      // UnrealBloom Post-Processing Pass
+      // UnrealBloom Post-Processing Pass (Pink Glow)
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -700,14 +672,14 @@
       composer.addPass(renderScene);
       composer.addPass(bloomPass);
 
-      const ambientLight = new THREE.AmbientLight(0x0a1838, 2.5);
+      const ambientLight = new THREE.AmbientLight(0x380a1c, 2.5);
       scene.add(ambientLight);
 
-      const coreLight = new THREE.PointLight(0x00d4ff, 5, 350);
+      const coreLight = new THREE.PointLight(0xff4d6d, 5, 350);
       coreLight.position.set(0, 0, 0);
       scene.add(coreLight);
 
-      // Particle Spiral Galaxy
+      // Pink Spiral Galaxy Particles
       const glowTexture = createGlowTexture();
       const particleCount = 45000;
       const geometry = new THREE.BufferGeometry();
@@ -715,8 +687,8 @@
       const colors = new Float32Array(particleCount * 3);
 
       const colorCore = new THREE.Color(0xffffff);
-      const colorInner = new THREE.Color(0x80f0ff);
-      const colorOuter = new THREE.Color(0x0044ff);
+      const colorInner = new THREE.Color(0xff85a1);
+      const colorOuter = new THREE.Color(0x900c3f);
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -757,7 +729,7 @@
       galaxyParticles = new THREE.Points(geometry, particleMaterial);
       scene.add(galaxyParticles);
 
-      // Volumetric Nebula Cloud Layer
+      // Pink Volumetric Nebula Cloud Layer
       cloudGroup = new THREE.Group();
       for (let i = 0; i < 20; i++) {
         const cloudGeo = new THREE.PlaneGeometry(80, 80);
@@ -766,7 +738,7 @@
           transparent: true,
           opacity: 0.08,
           blending: THREE.AdditiveBlending,
-          color: 0x0088ff,
+          color: 0xff4d6d,
           depthWrite: false,
           side: THREE.DoubleSide
         });
@@ -780,36 +752,40 @@
       }
       scene.add(cloudGroup);
 
-      // Central Heart Core
+      // --- Ultra-Smooth Rounded 3D Heart ---
       const heartShape = new THREE.Shape();
-      heartShape.fromPoints([
-        new THREE.Vector2(0, 3),
-        new THREE.Vector2(2, 5),
-        new THREE.Vector2(4, 3),
-        new THREE.Vector2(4, 0),
-        new THREE.Vector2(0, -4),
-        new THREE.Vector2(-4, 0),
-        new THREE.Vector2(-4, 3),
-        new THREE.Vector2(-2, 5),
-        new THREE.Vector2(0, 3)
-      ]);
+      const x = 0, y = 0;
+      heartShape.moveTo(x + 5, y + 5);
+      heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+      heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+      heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+      heartShape.bezierCurveTo(x + 13, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+      heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+      heartShape.bezierCurveTo(x + 6, y, x + 5, y + 5, x + 5, y + 5);
 
-      const extrudeSettings = { depth: 1.2, bevelEnabled: true, bevelSegments: 6, steps: 2, bevelSize: 0.8, bevelThickness: 0.8 };
+      const extrudeSettings = { 
+        depth: 3, 
+        bevelEnabled: true, 
+        bevelSegments: 12, 
+        steps: 4, 
+        bevelSize: 1.2, 
+        bevelThickness: 1.2 
+      };
       const heartGeo = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
       heartGeo.center();
 
       const heartMat = new THREE.MeshStandardMaterial({
-        color: 0x00e1ff,
-        emissive: 0x0088ff,
+        color: 0xff758f,
+        emissive: 0xff4d6d,
         emissiveIntensity: 1.2,
-        roughness: 0.1,
+        roughness: 0.15,
         metalness: 0.1
       });
       centralHeart = new THREE.Mesh(heartGeo, heartMat);
-      centralHeart.scale.set(3.2, 3.2, 3.2);
+      centralHeart.scale.set(1.2, 1.2, 1.2);
       scene.add(centralHeart);
 
-      // Floating Blue Roses & Messages
+      // Floating Pink Roses & Messages
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
@@ -828,12 +804,12 @@
       messages.forEach((msg, index) => {
         const angle = (index / messages.length) * Math.PI * 2;
         const distance = 60 + Math.random() * 30;
-        const x = Math.cos(angle) * distance;
-        const z = Math.sin(angle) * distance;
-        const y = (Math.random() - 0.5) * 25;
+        const posX = Math.cos(angle) * distance;
+        const posZ = Math.sin(angle) * distance;
+        const posY = (Math.random() - 0.5) * 25;
 
         const roseNode = create3DRose();
-        roseNode.position.set(x, y, z);
+        roseNode.position.set(posX, posY, posZ);
         roseNode.userData = { title: msg.title, text: msg.text };
 
         interactiveGroup.add(roseNode);
@@ -889,8 +865,8 @@
 
       let clock = new THREE.Clock();
 
-      function animateGalaxy() {
-        requestAnimationFrame(animateGalaxy);
+      function animateUniverse() {
+        requestAnimationFrame(animateUniverse);
         const elapsedTime = clock.getElapsedTime();
 
         if (isSpinning) {
@@ -910,7 +886,7 @@
         composer.render();
       }
 
-      animateGalaxy();
+      animateUniverse();
 
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
