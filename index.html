@@ -488,13 +488,16 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization with Larger 3D Photos ---
+    // --- Pink Universe 3D Initialization with Animated Floating Roses & Sparkles ---
     let galaxyInitialized = false;
-    let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
+    let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart, sparkleParticles;
     let isSpinning = true;
     let isIntroPlaying = true;
     let introProgress = 0;
     const photoPlanes = [];
+    const roseNodesList = [];
+    const sparkleCount = 1200;
+    let sparkleGeo, sparklePos;
 
     function launch3DGalaxy() {
       const overlay = document.getElementById('galaxy-overlay');
@@ -564,19 +567,18 @@
       }
 
       const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       roseGroup.add(ring);
+      roseGroup.userData.ring = ring; // Store reference to animate ring separately
 
       return roseGroup;
     }
 
-    // Function to create a 3D Floating Polaroid Photo Frame (Enlarged Size)
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
-      // Outer White Polaroid Border (Dramatically Larger: 24x28)
       const borderGeo = new THREE.PlaneGeometry(24, 28);
       const borderMat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
@@ -586,7 +588,6 @@
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
       frameGroup.add(borderMesh);
 
-      // Photo Texture Mesh (Dramatically Larger: 21x21)
       const textureLoader = new THREE.TextureLoader();
       textureLoader.load(
         imageUrl,
@@ -614,7 +615,6 @@
         }
       );
 
-      // Soft Backing Shadow Plane
       const shadowGeo = new THREE.PlaneGeometry(24.4, 28.4);
       const shadowMat = new THREE.MeshBasicMaterial({
         color: 0xff4d6d,
@@ -715,6 +715,29 @@
       galaxyParticles = new THREE.Points(geometry, particleMaterial);
       scene.add(galaxyParticles);
 
+      // --- Dynamic Upward Floating Sparkles ---
+      sparkleGeo = new THREE.BufferGeometry();
+      sparklePos = new Float32Array(sparkleCount * 3);
+
+      for (let i = 0; i < sparkleCount; i++) {
+        sparklePos[i * 3] = (Math.random() - 0.5) * 320;
+        sparklePos[i * 3 + 1] = (Math.random() - 0.5) * 120;
+        sparklePos[i * 3 + 2] = (Math.random() - 0.5) * 320;
+      }
+
+      sparkleGeo.setAttribute('position', new THREE.BufferAttribute(sparklePos, 3));
+      const sparkleMat = new THREE.PointsMaterial({
+        size: 3.5,
+        map: glowTexture,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        color: 0xffe6ee,
+        opacity: 0.9,
+        depthWrite: false
+      });
+      sparkleParticles = new THREE.Points(sparkleGeo, sparkleMat);
+      scene.add(sparkleParticles);
+
       cloudGroup = new THREE.Group();
       for (let i = 0; i < 20; i++) {
         const cloudGeo = new THREE.PlaneGeometry(80, 80);
@@ -773,17 +796,26 @@
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
-      // Add 5 Floating 3D Roses
-      for (let i = 0; i < 5; i++) {
-        const angle = (i / 5) * Math.PI * 2;
-        const distance = 55 + Math.random() * 15;
+      // Add 14 Floating 3D Roses (Increased to fill space & make universe alive)
+      const roseCount = 14;
+      for (let i = 0; i < roseCount; i++) {
+        const angle = (i / roseCount) * Math.PI * 2;
+        const distance = 40 + Math.random() * 85;
         const posX = Math.cos(angle) * distance;
         const posZ = Math.sin(angle) * distance;
-        const posY = (Math.random() - 0.5) * 15;
+        const posY = (Math.random() - 0.5) * 25;
 
         const roseNode = create3DRose();
         roseNode.position.set(posX, posY, posZ);
+        
+        // Save base Y position and offset for distinct bobbing animation
+        roseNode.userData.baseY = posY;
+        roseNode.userData.phaseOffset = Math.random() * Math.PI * 2;
+        roseNode.userData.bobSpeed = 1.2 + Math.random() * 0.8;
+        roseNode.userData.spinSpeed = 0.6 + Math.random() * 0.8;
+
         interactiveGroup.add(roseNode);
+        roseNodesList.push(roseNode);
       }
 
       // Add 5 Floating Enlarged 3D Photo Frames around the Heart
@@ -791,13 +823,15 @@
       
       photoFiles.forEach((file, index) => {
         const angle = (index / photoFiles.length) * Math.PI * 2 + 0.6;
-        const distance = 85 + Math.random() * 20;
+        const distance = 95 + Math.random() * 20;
         const posX = Math.cos(angle) * distance;
         const posZ = Math.sin(angle) * distance;
         const posY = (Math.random() - 0.5) * 20;
 
         const photoFrame = create3DPhotoFrame(file);
         photoFrame.position.set(posX, posY, posZ);
+        photoFrame.userData.baseY = posY;
+        photoFrame.userData.phaseOffset = index * 1.2;
         
         interactiveGroup.add(photoFrame);
         photoPlanes.push(photoFrame);
@@ -839,12 +873,37 @@
           cloudGroup.rotation.y = elapsedTime * 0.02;
         }
 
+        // Central Heart Animation
         centralHeart.rotation.y = elapsedTime * 0.5;
         centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
 
+        // Individual Animations for Each 3D Rose Node
+        roseNodesList.forEach(rose => {
+          // Continuous floating up & down movement
+          rose.position.y = rose.userData.baseY + Math.sin(elapsedTime * rose.userData.bobSpeed + rose.userData.phaseOffset) * 4.0;
+          // Smooth rotation on its own axis
+          rose.rotation.y += 0.015 * rose.userData.spinSpeed;
+          // Counter-rotating outer ring for floating energy feel
+          if (rose.userData.ring) {
+            rose.userData.ring.rotation.z -= 0.02;
+          }
+        });
+
+        // Floating Photo Frames Animation & Billboard Effect
         photoPlanes.forEach(photo => {
+          photo.position.y = photo.userData.baseY + Math.sin(elapsedTime * 1.5 + photo.userData.phaseOffset) * 3.0;
           photo.lookAt(camera.position);
         });
+
+        // Upward Floating Sparkles Animation
+        const positions = sparkleGeo.attributes.position.array;
+        for (let i = 0; i < sparkleCount; i++) {
+          positions[i * 3 + 1] += 0.15; // Float upwards
+          if (positions[i * 3 + 1] > 60) {
+            positions[i * 3 + 1] = -60; // Loop back to bottom
+          }
+        }
+        sparkleGeo.attributes.position.needsUpdate = true;
 
         controls.update();
         composer.render();
