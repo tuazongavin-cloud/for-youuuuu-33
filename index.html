@@ -488,7 +488,7 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization with Crisp & Sharp 3D Photos ---
+    // --- Pink Universe 3D Initialization with Restored Vibrant Glow & Sharp Photos ---
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart;
     let isSpinning = true;
@@ -540,7 +540,7 @@
       const petalMat = new THREE.MeshStandardMaterial({
         color: 0xff758f,
         emissive: 0xc9184a,
-        emissiveIntensity: 0.8,
+        emissiveIntensity: 1.2,
         roughness: 0.2,
         side: THREE.DoubleSide
       });
@@ -564,7 +564,7 @@
       }
 
       const ringGeo = new THREE.RingGeometry(4.5, 5.2, 32);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide, transparent: true, opacity: 0.8 });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       roseGroup.add(ring);
@@ -572,20 +572,18 @@
       return roseGroup;
     }
 
-    // Function to create a Crisp, High-Visibility 3D Polaroid Frame
+    // Function to create High-Visibility 3D Polaroid Frame with Crisp Photo Texture
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
-      // Slightly darker white/soft grey border so Bloom post-processing doesn't wash it out
       const borderGeo = new THREE.PlaneGeometry(16, 20);
       const borderMat = new THREE.MeshBasicMaterial({
-        color: 0xdedede,
+        color: 0xffffff,
         side: THREE.DoubleSide
       });
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
       frameGroup.add(borderMesh);
 
-      // Photo Texture Mesh with Crisp Filtering
       const textureLoader = new THREE.TextureLoader();
       textureLoader.load(
         imageUrl,
@@ -601,12 +599,11 @@
             side: THREE.DoubleSide
           });
           const photoMesh = new THREE.Mesh(photoGeo, photoMat);
-          photoMesh.position.set(0, 1.2, 0.08); // Placed slightly above border
+          photoMesh.position.set(0, 1.2, 0.08);
           frameGroup.add(photoMesh);
         },
         undefined,
         () => {
-          // Fallback if image path is not found
           const fallbackGeo = new THREE.PlaneGeometry(14, 15);
           const fallbackMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide });
           const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
@@ -615,12 +612,11 @@
         }
       );
 
-      // Soft Dark Pink Shadow Backing
       const shadowGeo = new THREE.PlaneGeometry(16.4, 20.4);
       const shadowMat = new THREE.MeshBasicMaterial({
-        color: 0x590d22,
+        color: 0xff4d6d,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.8,
         side: THREE.DoubleSide
       });
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
@@ -642,7 +638,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ReinhardToneMapping;
-      renderer.toneMappingExposure = 1.2;
+      renderer.toneMappingExposure = 1.3;
       container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -650,23 +646,23 @@
       controls.dampingFactor = 0.05;
       controls.enabled = false;
 
-      // Softened Bloom Pass so bloom threshold does not overexpose white photos
+      // Restored Vibrant Bloom Pass for the "Alive" Glowing Galaxy Effect
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        0.75, // Lower bloom strength to keep photos crisp
-        0.3, 
-        0.65 // Higher threshold so only glowing particles bloom, NOT photos
+        1.5,  // High vibrant glow strength back!
+        0.4, 
+        0.2   // Low threshold so particles and roses glow intensely
       );
 
       composer = new THREE.EffectComposer(renderer);
       composer.addPass(renderScene);
       composer.addPass(bloomPass);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
+      const ambientLight = new THREE.AmbientLight(0x5a1a32, 3.0);
       scene.add(ambientLight);
 
-      const coreLight = new THREE.PointLight(0xffb3c1, 4, 350);
+      const coreLight = new THREE.PointLight(0xff758f, 7, 450);
       coreLight.position.set(0, 0, 0);
       scene.add(coreLight);
 
@@ -676,9 +672,9 @@
       const positions = new Float32Array(particleCount * 3);
       const colors = new Float32Array(particleCount * 3);
 
-      const colorCore = new THREE.Color(0xfff0f3);
+      const colorCore = new THREE.Color(0xffffff);
       const colorInner = new THREE.Color(0xff85a1);
-      const colorOuter = new THREE.Color(0x780016);
+      const colorOuter = new THREE.Color(0xb0003a);
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -707,25 +703,25 @@
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
       const particleMaterial = new THREE.PointsMaterial({
-        size: 2.2,
+        size: 2.3,
         map: glowTexture,
         transparent: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
         vertexColors: true,
-        opacity: 0.85
+        opacity: 0.95
       });
 
       galaxyParticles = new THREE.Points(geometry, particleMaterial);
       scene.add(galaxyParticles);
 
       cloudGroup = new THREE.Group();
-      for (let i = 0; i < 20; i++) {
-        const cloudGeo = new THREE.PlaneGeometry(80, 80);
+      for (let i = 0; i < 22; i++) {
+        const cloudGeo = new THREE.PlaneGeometry(90, 90);
         const cloudMat = new THREE.MeshBasicMaterial({
           map: glowTexture,
           transparent: true,
-          opacity: 0.06,
+          opacity: 0.12, // Brighter nebula clouds
           blending: THREE.AdditiveBlending,
           color: 0xff4d6d,
           depthWrite: false,
@@ -764,9 +760,9 @@
 
       const heartMat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
-        emissive: 0xffb3c1,
-        emissiveIntensity: 0.6,
-        roughness: 0.2,
+        emissive: 0xff758f,
+        emissiveIntensity: 1.5, // Radiant glowing heart
+        roughness: 0.15,
         metalness: 0.1
       });
       centralHeart = new THREE.Mesh(heartGeo, heartMat);
@@ -776,7 +772,6 @@
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
-      // Add 5 Floating 3D Roses
       for (let i = 0; i < 5; i++) {
         const angle = (i / 5) * Math.PI * 2;
         const distance = 55 + Math.random() * 15;
@@ -789,7 +784,6 @@
         interactiveGroup.add(roseNode);
       }
 
-      // Add 5 Floating Crisp 3D Polaroid Photo Frames around the Heart
       const photoFiles = ['3dphoto1.jpg', '3dphoto2.jpg', '3dphoto3.jpg', '3dphoto4.jpg', '3dphoto5.jpg'];
       
       photoFiles.forEach((file, index) => {
@@ -845,7 +839,6 @@
         centralHeart.rotation.y = elapsedTime * 0.5;
         centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
 
-        // Smoothly orient photos towards camera so they remain clear
         photoPlanes.forEach(photo => {
           photo.lookAt(camera.position);
         });
