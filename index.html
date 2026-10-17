@@ -661,21 +661,21 @@
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
 
-      // UnrealBloom Post-Processing Pass (Pink Glow)
+      // UnrealBloom Post-Processing Pass (Softened for Eye Comfort)
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.6, 0.4, 0.15
+        1.1, 0.5, 0.3
       );
 
       composer = new THREE.EffectComposer(renderer);
       composer.addPass(renderScene);
       composer.addPass(bloomPass);
 
-      const ambientLight = new THREE.AmbientLight(0x380a1c, 2.5);
+      const ambientLight = new THREE.AmbientLight(0x4a1528, 2.5);
       scene.add(ambientLight);
 
-      const coreLight = new THREE.PointLight(0xff4d6d, 5, 350);
+      const coreLight = new THREE.PointLight(0xff758f, 6, 400);
       coreLight.position.set(0, 0, 0);
       scene.add(coreLight);
 
@@ -686,9 +686,9 @@
       const positions = new Float32Array(particleCount * 3);
       const colors = new Float32Array(particleCount * 3);
 
-      const colorCore = new THREE.Color(0xffffff);
+      const colorCore = new THREE.Color(0xfff0f3);
       const colorInner = new THREE.Color(0xff85a1);
-      const colorOuter = new THREE.Color(0x900c3f);
+      const colorOuter = new THREE.Color(0x780016);
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -736,7 +736,7 @@
         const cloudMat = new THREE.MeshBasicMaterial({
           map: glowTexture,
           transparent: true,
-          opacity: 0.08,
+          opacity: 0.06,
           blending: THREE.AdditiveBlending,
           color: 0xff4d6d,
           depthWrite: false,
@@ -752,37 +752,38 @@
       }
       scene.add(cloudGroup);
 
-      // --- Ultra-Smooth Rounded 3D Heart ---
+      // --- Correctly Oriented, Ultra-Smooth Rounded 3D Heart ---
       const heartShape = new THREE.Shape();
       const x = 0, y = 0;
-      heartShape.moveTo(x + 5, y + 5);
-      heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
-      heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
-      heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
-      heartShape.bezierCurveTo(x + 13, y + 15.4, x + 16, y + 11, x + 16, y + 7);
-      heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
-      heartShape.bezierCurveTo(x + 6, y, x + 5, y + 5, x + 5, y + 5);
+      // Corrected curve path oriented right-side up with point facing down
+      heartShape.moveTo(x, y + 2.5);
+      heartShape.bezierCurveTo(x, y + 2.5, x - 4, y + 8, x - 10, y + 8);
+      heartShape.bezierCurveTo(x - 16, y + 8, x - 16, y + 1, x - 16, y + 1);
+      heartShape.bezierCurveTo(x - 16, y - 4, x - 10, y - 9, x, y - 15);
+      heartShape.bezierCurveTo(x + 10, y - 9, x + 16, y - 4, x + 16, y + 1);
+      heartShape.bezierCurveTo(x + 16, y + 1, x + 16, y + 8, x + 10, y + 8);
+      heartShape.bezierCurveTo(x + 4, y + 8, x, y + 2.5, x, y + 2.5);
 
       const extrudeSettings = { 
-        depth: 3, 
+        depth: 4, 
         bevelEnabled: true, 
-        bevelSegments: 12, 
+        bevelSegments: 16, 
         steps: 4, 
-        bevelSize: 1.2, 
-        bevelThickness: 1.2 
+        bevelSize: 1.5, 
+        bevelThickness: 1.5 
       };
       const heartGeo = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
       heartGeo.center();
 
       const heartMat = new THREE.MeshStandardMaterial({
-        color: 0xff758f,
-        emissive: 0xff4d6d,
-        emissiveIntensity: 1.2,
-        roughness: 0.15,
-        metalness: 0.1
+        color: 0xff4d6d,
+        emissive: 0xc9184a,
+        emissiveIntensity: 0.9,
+        roughness: 0.2,
+        metalness: 0.15
       });
       centralHeart = new THREE.Mesh(heartGeo, heartMat);
-      centralHeart.scale.set(1.2, 1.2, 1.2);
+      centralHeart.scale.set(1.4, 1.4, 1.4);
       scene.add(centralHeart);
 
       // Floating Pink Roses & Messages
