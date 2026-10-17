@@ -488,7 +488,7 @@
       fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    // --- Pink Universe 3D Initialization with Animated Floating Roses & Sparkles ---
+    // --- Pink Universe 3D Initialization ---
     let galaxyInitialized = false;
     let scene, camera, renderer, composer, controls, galaxyParticles, cloudGroup, interactiveGroup, centralHeart, sparkleParticles;
     let isSpinning = true;
@@ -571,20 +571,22 @@
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       roseGroup.add(ring);
-      roseGroup.userData.ring = ring; // Store reference to animate ring separately
+      roseGroup.userData.ring = ring;
 
       return roseGroup;
     }
 
+    // Function to create Crystal-Clear 3D Photo Frame without Bloom Bleed
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
+      // Soft rose off-white border to avoid sending blown-out white pixels into bloom pass
       const borderGeo = new THREE.PlaneGeometry(24, 28);
-      const borderMat = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        roughness: 0.3,
+      const borderMat = new THREE.MeshBasicMaterial({
+        color: 0xd8c2ca,
         side: THREE.DoubleSide
       });
+      borderMat.toneMapped = false;
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
       frameGroup.add(borderMesh);
 
@@ -599,8 +601,10 @@
           const photoGeo = new THREE.PlaneGeometry(21, 21);
           const photoMat = new THREE.MeshBasicMaterial({
             map: texture,
+            color: 0xd5d5d5, // Softened base color prevents bloom glare over image
             side: THREE.DoubleSide
           });
+          photoMat.toneMapped = false;
           const photoMesh = new THREE.Mesh(photoGeo, photoMat);
           photoMesh.position.set(0, 2, 0.08);
           frameGroup.add(photoMesh);
@@ -609,6 +613,7 @@
         () => {
           const fallbackGeo = new THREE.PlaneGeometry(21, 21);
           const fallbackMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide });
+          fallbackMat.toneMapped = false;
           const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
           fallbackMesh.position.set(0, 2, 0.08);
           frameGroup.add(fallbackMesh);
@@ -622,6 +627,7 @@
         opacity: 0.4,
         side: THREE.DoubleSide
       });
+      shadowMat.toneMapped = false;
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
       shadowMesh.position.set(0, 0, -0.08);
       frameGroup.add(shadowMesh);
@@ -649,6 +655,7 @@
       controls.dampingFactor = 0.05;
       controls.enabled = false;
 
+      // Full Glowing Bloom Pass Kept Intact for Universe & Roses
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -715,7 +722,7 @@
       galaxyParticles = new THREE.Points(geometry, particleMaterial);
       scene.add(galaxyParticles);
 
-      // --- Dynamic Upward Floating Sparkles ---
+      // Upward Floating Sparkles
       sparkleGeo = new THREE.BufferGeometry();
       sparklePos = new Float32Array(sparkleCount * 3);
 
@@ -760,7 +767,7 @@
       }
       scene.add(cloudGroup);
 
-      // Exact Original Central 3D Heart
+      // Central 3D Heart
       const heartShape = new THREE.Shape();
       const x = 0, y = 0;
       heartShape.moveTo(x, y + 2.5);
@@ -796,7 +803,7 @@
       interactiveGroup = new THREE.Group();
       scene.add(interactiveGroup);
 
-      // Add 14 Floating 3D Roses (Increased to fill space & make universe alive)
+      // 14 Floating Animated Roses
       const roseCount = 14;
       for (let i = 0; i < roseCount; i++) {
         const angle = (i / roseCount) * Math.PI * 2;
@@ -808,7 +815,6 @@
         const roseNode = create3DRose();
         roseNode.position.set(posX, posY, posZ);
         
-        // Save base Y position and offset for distinct bobbing animation
         roseNode.userData.baseY = posY;
         roseNode.userData.phaseOffset = Math.random() * Math.PI * 2;
         roseNode.userData.bobSpeed = 1.2 + Math.random() * 0.8;
@@ -818,7 +824,7 @@
         roseNodesList.push(roseNode);
       }
 
-      // Add 5 Floating Enlarged 3D Photo Frames around the Heart
+      // 5 Floating 3D Photos around the Heart
       const photoFiles = ['3dphoto1.jpg', '3dphoto2.jpg', '3dphoto3.jpg', '3dphoto4.jpg', '3dphoto5.jpg'];
       
       photoFiles.forEach((file, index) => {
@@ -873,34 +879,27 @@
           cloudGroup.rotation.y = elapsedTime * 0.02;
         }
 
-        // Central Heart Animation
         centralHeart.rotation.y = elapsedTime * 0.5;
         centralHeart.position.y = Math.sin(elapsedTime * 2) * 2.5;
 
-        // Individual Animations for Each 3D Rose Node
         roseNodesList.forEach(rose => {
-          // Continuous floating up & down movement
           rose.position.y = rose.userData.baseY + Math.sin(elapsedTime * rose.userData.bobSpeed + rose.userData.phaseOffset) * 4.0;
-          // Smooth rotation on its own axis
           rose.rotation.y += 0.015 * rose.userData.spinSpeed;
-          // Counter-rotating outer ring for floating energy feel
           if (rose.userData.ring) {
             rose.userData.ring.rotation.z -= 0.02;
           }
         });
 
-        // Floating Photo Frames Animation & Billboard Effect
         photoPlanes.forEach(photo => {
           photo.position.y = photo.userData.baseY + Math.sin(elapsedTime * 1.5 + photo.userData.phaseOffset) * 3.0;
           photo.lookAt(camera.position);
         });
 
-        // Upward Floating Sparkles Animation
         const positions = sparkleGeo.attributes.position.array;
         for (let i = 0; i < sparkleCount; i++) {
-          positions[i * 3 + 1] += 0.15; // Float upwards
+          positions[i * 3 + 1] += 0.15;
           if (positions[i * 3 + 1] > 60) {
-            positions[i * 3 + 1] = -60; // Loop back to bottom
+            positions[i * 3 + 1] = -60;
           }
         }
         sparkleGeo.attributes.position.needsUpdate = true;
