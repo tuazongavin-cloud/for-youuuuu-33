@@ -576,17 +576,16 @@
       return roseGroup;
     }
 
-    // Function to create Crystal-Clear 3D Photo Frame without Bloom Bleed
+    // Fully Non-Glares 3D Photo Frame Implementation
     function create3DPhotoFrame(imageUrl) {
       const frameGroup = new THREE.Group();
 
-      // Soft rose off-white border to avoid sending blown-out white pixels into bloom pass
+      // Dark polaroid backing prevents blooming border glare completely
       const borderGeo = new THREE.PlaneGeometry(24, 28);
       const borderMat = new THREE.MeshBasicMaterial({
-        color: 0xd8c2ca,
+        color: 0x22181c,
         side: THREE.DoubleSide
       });
-      borderMat.toneMapped = false;
       const borderMesh = new THREE.Mesh(borderGeo, borderMat);
       frameGroup.add(borderMesh);
 
@@ -599,12 +598,12 @@
           texture.magFilter = THREE.LinearFilter;
 
           const photoGeo = new THREE.PlaneGeometry(21, 21);
+          // Controlled texture color scale ensures zero white pixel blowout
           const photoMat = new THREE.MeshBasicMaterial({
             map: texture,
-            color: 0xd5d5d5, // Softened base color prevents bloom glare over image
+            color: 0x999999,
             side: THREE.DoubleSide
           });
-          photoMat.toneMapped = false;
           const photoMesh = new THREE.Mesh(photoGeo, photoMat);
           photoMesh.position.set(0, 2, 0.08);
           frameGroup.add(photoMesh);
@@ -613,7 +612,6 @@
         () => {
           const fallbackGeo = new THREE.PlaneGeometry(21, 21);
           const fallbackMat = new THREE.MeshBasicMaterial({ color: 0xffb3c1, side: THREE.DoubleSide });
-          fallbackMat.toneMapped = false;
           const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
           fallbackMesh.position.set(0, 2, 0.08);
           frameGroup.add(fallbackMesh);
@@ -624,10 +622,9 @@
       const shadowMat = new THREE.MeshBasicMaterial({
         color: 0xff4d6d,
         transparent: true,
-        opacity: 0.4,
+        opacity: 0.3,
         side: THREE.DoubleSide
       });
-      shadowMat.toneMapped = false;
       const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
       shadowMesh.position.set(0, 0, -0.08);
       frameGroup.add(shadowMesh);
@@ -647,7 +644,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ReinhardToneMapping;
-      renderer.toneMappingExposure = 1.2;
+      renderer.toneMappingExposure = 1.0;
       container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -655,21 +652,21 @@
       controls.dampingFactor = 0.05;
       controls.enabled = false;
 
-      // Full Glowing Bloom Pass Kept Intact for Universe & Roses
+      // Selective threshold pass keeps galaxy & roses blooming while excluding photos
       const renderScene = new THREE.RenderPass(scene, camera);
       const bloomPass = new THREE.UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.0, 0.4, 0.3
+        0.9, 0.4, 0.55
       );
 
       composer = new THREE.EffectComposer(renderer);
       composer.addPass(renderScene);
       composer.addPass(bloomPass);
 
-      const ambientLight = new THREE.AmbientLight(0x4a1528, 2.5);
+      const ambientLight = new THREE.AmbientLight(0x4a1528, 2.0);
       scene.add(ambientLight);
 
-      const coreLight = new THREE.PointLight(0xffb3c1, 5, 350);
+      const coreLight = new THREE.PointLight(0xffb3c1, 4, 350);
       coreLight.position.set(0, 0, 0);
       scene.add(coreLight);
 
